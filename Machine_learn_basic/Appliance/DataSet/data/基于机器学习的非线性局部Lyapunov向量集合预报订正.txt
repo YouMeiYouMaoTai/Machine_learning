@@ -1,0 +1,1805 @@
+物 理 学 报 Acta Phys. Sin. Vol. 71, No. 8 (2022)
+
+080503
+
+基于机器学习的非线性局部 Lyapunov 向量
+集合预报订正*
+康俊锋 1)
+
+冯松江 1)2)
+
+邹倩 2)4)
+
+李艳杰 2)
+
+1) (江西理工大学土木与测绘工程学院, 赣州
+
+丁瑞强 3)
+341000)
+
+2) (中国科学院大气物理研究所, 大气科学和地球流体力学数值模拟国家重点实验室, 北京
+3) (北京师范大学, 地表过程与资源生态国家重点实验室, 北京
+4) (中国科学院大学地球科学学院, 北京
+
+钟权加 2)†
+
+100029)
+
+100875)
+
+100049)
+
+(2021 年 12 月 7 日收到; 2021 年 12 月 30 日收到修改稿)
+
+基于 Lorenz96 模型初步探讨了机器学习算法提高非线性局部 Lyapunov 向量 (NLLV) 集合预报效果的
+可行性和有效性. 结果表明: 基于岭回归算法和 NLLV 集合预报结果建立的机器学习模型 (Ens-ML) 能够有
+效提高整体预报技巧, 而且优于集合平均预报 (EnsAve)、控制预报 (Ctrl) 以及基于 Ctrl 结果建立的机器学习
+模型 (Ctrl-ML). 同时, 还发现 Ens-ML 的预报技巧改进程度依赖于集合成员的数量, 即增加集合成员数有助
+于提高 Ens-ML 模型的整体预报准确率. 通过对比个例预报表现得到, 随着预报时间延长, Ens-ML, Ctrl-ML
+和 EnsAve 的个例预报误差逐渐小于 Ctrl. 进一步分析 Ens-ML, Ctrl-ML 和 EnsAve 预报的吸引子, 发现它们
+的概率分布的值域收缩、峰度增大并向平均值靠拢, 尤其 Ens-ML 的表现更为明显.
+
+关键词：机器学习, 非线性局部 Lyapunov 向量, 集合预报, Lorenz96 模型
+PACS：05.45.–a, 92.60.Wc
+
+DOI: 10.7498/aps.71.20212260
+
+的噪音, 保留可预报的有用信息; 另一方面, 根据
+
+1 引
+
+集合成员的预报结果可获得概率预报. 自 20 世纪
+
+言
+
+90 年代以来, 集合预报在天气预报与气候预测领
+
+近几十年来, 得益于计算机硬件的快速发展、
+
+域得到了广泛的研究和应用, 众多研究和业务应用
+
+数值模式和资料同化技术的研发和应用, 数值预报
+
+的结果都表明集合预报是减小预报不确定性、提高
+
+取得了长足的进步, 提升了天气预报和气候预测的
+
+预报水平的有效途径 [4−6].
+针对数值预报中的初值不确定性和模式本身
+
+准确率. 然而, 大气作为一个具有混沌特性的非线
+[1]
+
+性系统, 其预报结果存在一定的不确定性 . 最早,
+
+的不确定性, 前人相应发展了初值扰动和模式物理
+
+Leith[2] 和 Epstein[3] 提出了集合预报的思想和方法
+
+扰动以及多模式集合预报方法 [7]. 假设在模式完美
+
+来应对数值预报中的不确定性问题, 其基本思路是
+
+情况下, 初始集合生成的关键是如何产生能够很好
+
+在初始状态上叠加一组扰动生成初始集合, 并分别
+
+描述初始状态不确定性的扰动场. 为此, 国内外学
+
+积分各个初始成员得到一组预报结果的集合. 一方
+
+者相继发展了多种初值集合生成方法, 代表性的包
+
+面, 集合平均的非线性滤波作用可以过滤不可预报
+
+括繁殖向量 (BV)[8,9]、奇异向量 (SV)[10] 和集合卡
+
+* 国家自然科学基金 (批准号: 42105059, 41975070)、上海台风研究基金 (批准号: TFJJ202108) 和江西省 03 专项及 5G 项目 (批
+准号: 20204ABC03A04) 资助的课题.
+† 通信作者. E-mail: zqj@lasg.iap.ac.cn
+
+© 2022 中国物理学会 Chinese Physical Society
+
+http://wulixb.iphy.ac.cn
+080503-1
+
+万方数据
+
+物 理 学 报 Acta Phys. Sin. Vol. 71, No. 8 (2022)
+
+080503
+
+尔曼滤波 (EnKF)[11,12] 方法. 其中, BV 和 SV 方法
+
+个数的使用等多个不同角度探讨机器学习算法和
+
+发展较为成熟, 它们都是基于误差增长动力学理论
+
+NLLV 集合预报相结合的可行性和有效性.
+
+发展起来的方法, 主要通过抓住增长的扰动结构和
+演变来反映数值预报误差的不确定性. 尽管 BV
+和 SV 方法在业务上得到较好的应用, 但仍存在一
+定的不足. 例如, SV 方法基于线性误差增长理论,
+
+2 数据与方法
+2.1
+
+具有线性约束的局限性, 不能很好地描述误差非线
+性增长特征. 为此, Duan
+
+和 Huo[13]
+
+Lorenz96 模型简介与试验设计
+Lorenz96 模型具有对初值极端敏感性和非线
+
+发展了 CNOP 方
+
+性的特点, 能够作为大气系统的低阶近似, 广泛应
+
+法来表征误差的非线性增长模态. 与 SV 和 CNOP
+
+用于大气可预报性和集合预报研究 [15,23], 该模型动
+
+方法相比, BV 方法无需复杂的切线性和伴随模式,
+
+力方程组可表示为
+
+计算非常简便和省时. 但是 BV 扰动是在动力系统
+中相同的基流演化得到, 导致产生的初始扰动结构
+较为相似, 独立性不足 [14]. 考虑 BV 方法的优点和
+不足, 最近我国学者提出了非线性局部 Lyapunov
+向量 (NLLV)[15,16] 集合预报新方法, 该方法利用
+和 BV 方法类似的简便的繁殖思想生成扰动, 能够
+很好地抓住非线性动力系统中的增长误差结构, 同
+时又通过正交化弥补 BV 方法产生的扰动结构依
+赖性较强的不足, 有助于进一步提升集合初值扰动
+的产生质量.
+近年来, 随着大数据科学的发展, 越来越多的
+研究将机器学习算法和人工智能技术应用于挖掘
+
+dXi /dt = (Xi+1 − Xi−2 )Xi−1 − Xi + F,
+
+其中, Xi (i = 1, 2, ···, 40) 为模型状态变量, 定常
+强迫项 F = 8, 数值积分采用四阶龙格-库塔格式,
+积分步长为 0.05 时间单位 (tus). 在 Lorenz96 模型
+的混沌吸引子上每间隔 0.05 tus 选取一个状态作
+为集合预报试验的初始态, 本研究共选取了 10000
+个初始态作为集合预报个例, 每个个例的积分步数
+为 41. 在 Lorenz96 模型中每间隔 0.2 tus 大致对应
+1 d[24]. 因此, 积分 41 步共为 2.05 tus, 大致对应 10 d.
+
+2.2
+
+海量的气象数据信息并加以利用, 以提高天气预报
+和气候预测的准确率 [17−19]. 一方面, 既有利用单一
+数值模式的不同气象要素构建预报预测模型, 例
+如, 利用机器学习中的随机森林算法构建短时地面
+风场预报模型, 能够有效预报地面 1—6 h 风场变
+化 [20]; 另一方面, 也有基于单个数值模式集合预报
+结果或者多模式的集合预报结果, 结合机器学习算
+
+(1)
+
+NLLV 方 法 简 介 及 其 产 生 初 始 集 合
+扰动的流程
+NLLV 是一种生成集合预报初始扰动的新方
+
+法 [15,16],
+
+该方法产生的初始集合成员 NLLVs 具有
+
+正交性、独立性以及流依赖性等特点. 因此, 它们
+既能够描述不同方向的误差增长率, 还能够很好地
+反映误差结构随天气、气候等混沌系统时空演化的
+特征 [25]. 基于上述优势, NLLV 方法逐渐应用于
+
+法建立集合预报机器学习模型, 从而达到提高预报
+
+Lorenz 模型、准地转正压模式、中等复杂程度的
+
+预测准确率的目的. 比如, 通过机器学习算法对华
+
+ENSO 动力耦合模式 (Zebiak-Cane 模式) 以及新
+
+北气温的多模式集合预报结果进行建模订正, 其订
+
+一代中尺度数值模式 (WRF 模式) 的集合预报研
+
+正效果明显优于数值模式的单一预报和多模式的
+
+究 , 并 发 现 其 能 够 有 效 地 提 高 预 报 技 巧 [15,26,27].
+
+集合平均 [21]. 此外, 也有学者基于深度学习模型构
+
+NLLV 方法产生扰动制作集合预报的流程如图 1
+
+建了长期气候预测模型, 实现了对 ENSO 的有效
+
+所示, 当 NLLV 繁殖开始时, 将一组初始随机扰动
+
+预测 [22].
+鉴于 NLLV 是一种新的集合预报方法, 具有
+
+分析态
+
+预报
+
+一定的理论创新性, 同时机器学习方法又在气象领
+
+初始随机扰动
+
+扰动预报
+…
+
+域具有广阔的应用前景. 因此, 本文将基于简单的
+
+预报建立机器学习模型, 并从整体预报效果、不同
+个例预报误差大小、吸引子概率分布以及集合成员
+080503-2
+
+万方数据
+
+NLLV1
+NLLV2−NLLV
+
+Lorenz96 模型开展集合预报试验, 然后结合机器
+学习算法分别利用 NLLV 的集合预报和单一控制
+
+预报误差
+
+正交化
+
+时间
+
+繁殖循环
+
+图1
+
+NLLVs 扰动生成示意图 [15]
+
+Fig. 1. Schematic diagram of the generation of NLLVs[15] .
+
+物 理 学 报 Acta Phys. Sin. Vol. 71, No. 8 (2022)
+
+080503
+
+添加到分析状态上进行积分, 再对积分的结果进行
+
+图 3 给出了机器学习的建模流程. 首先, 对集
+
+正交化处理并尺度化至初始扰动大小, 然后又将其
+
+合成员进行标准化预处理; 然后, 将集合预报试验
+
+叠加到新的分析状态上, 经过多个繁殖循环得到
+
+的控制预报成员 (Control, Ctrl) 作为特征变量, 真
+
+NLLVs. 参考 Feng 等 [15] 的研究, 当集合成员达到
+
+值作为目标变量, 建立基于控制预报的机器学习模
+
+一定数量时, 使用更多的成员也只能有限地提高预
+
+型 (Control machine learning, Ctrl-ML); 接着, 将
+
+报技巧, 因此本研究使用 NLLV 方法共生成 6 个
+
+集合预报试验的集合成员作为特征变量, 真值作为
+
+集合成员.
+
+目标变量, 建立基于集合成员的机器学习模型
+
+2.3
+
+(Ensemble machine learning, Ens-ML); 上述建模
+
+机器学习方法与其建模流程
+
+过程还需要分别将两个模型的数据集划分为训练
+
+岭回归属于多元线性回归方法的一种, 其在最
+
+集和测试集, 其中训练集占 70% (7000 个), 测试集
+
+小二乘法的基础上改进而来, 能够很好地解决多重
+
+占 30% (3000 个). 接着, 分别对上述两个模型进行
+
+共线性数据集的回归问题 [28,29].
+
+考虑到本研究的
+
+训练、测试, 在训练模型时将其迭代次数参数
+
+NLLV 集合预报试验数据集中各预报成员之间呈
+
+“max_iter”设置为 None, 模型将自动寻得最优迭
+
+现强相关性, 具有显著的共线性特征 (图 2), 所以
+
+代次数, 正则项系数“alpha”为 1.0. 最后, 对模型
+
+将该方法作为构建机器学习模型的算法. 在岭回归
+
+的测试结果进行评估并输出, 评估方法见 2.4 节.
+
+模型的构建过程中将预报成员作为特征变量 xi(i =
+
+集合
+成员
+
+1, 2, 3, ···, 7), 其模型框架可表示为
+f (x) = wi xi + b,
+
+(2)
+
+f (x) = wT x + b,
+
+(3)
+
+标记特征变量
+和目标变量
+
+(4)
+
+分割数据集
+
+预处理
+
+即
+
+模型的损失函数为
+J(w) =
+
+∑
+
+(y − f (x))2 + ||w||2 ,
+
+其中 wi 为特征变量的回归系数, b 为偏置, y 为真
+
+训练集
+
+值, l 为正则项系数; w 和 x 分别是 wi 和 xi 的矩
+阵. 用梯度下降算法对损失函数求最小解可得
+
+训练模型
+
+w 和 b, 确定岭回归模型.
+
+训练集
+机器学习
+模型
+
+测试模型
+
+Ctrl
+
+EnsM6 EnsM5 EnsM4 EnsM3 EnsM2 EnsM1
+
+评估
+1.00
+
+0.88
+
+1.000
+
+预测输出
+
+0.975
+
+1.00
+
+图3
+
+0.950
+0.88
+
+0.88
+
+1.00
+
+0.82
+
+0.87
+
+0.87
+
+1.00
+
+0.87
+
+0.82
+
+0.87
+
+0.88
+
+1.00
+
+0.87
+
+0.87
+
+0.82
+
+0.88
+
+0.88
+
+1.00
+
+0.90
+
+0.90
+
+0.90
+
+0.90
+
+0.90
+
+0.90
+
+0.925
+0.900
+
+2.4
+
+0.850
+
+EnsM1 EnsM2 EnsM3 EnsM4 EnsM5 EnsM6
+
+均预报 (ensemble average, EnsAve). 即
+
+0.825
+
+EnsAve =
+
+N
+1 ∑
+Vi ,
+N i=1
+
+(5)
+
+1.00
+
+其中, Vi 代表集合成员的值, N 代表集合成员个数.
+
+Ctrl
+
+此外, 为了从不同角度来综合评估不同方法
+
+各集合成员间的相关系数矩阵
+
+Fig. 2. Correlation coefficient matrix of ensemble members.
+
+的预报表现, 本文主要使用了可决系数 (R²)、平均
+绝对误差 (MAE)、均方误差 (MSE)、均方根误差
+080503-3
+
+万方数据
+
+预报试验评估方法
+通过对所有集合成员做算术平均, 得到集合平
+
+0.875
+
+图2
+
+机器学习模型构建流程图
+
+Fig. 3. Process of machine learning.
+
+物 理 学 报 Acta Phys. Sin. Vol. 71, No. 8 (2022)
+
+080503
+
+(RMSE) 和 型 异 常 相 关 系 数 (PAC) 等 预 报 评 估
+
+整体预报技巧是最高的, EnsAve 次之, Ctrl 的预
+
+方法 [30,31].
+
+报技巧最差 (见表 1).
+如图 5(a) 所示, 由于两个机器学习模型均在
+
+3 结果与分析
+
+预报初期出现过拟合现象, 从而导致其平均 RMSE
+
+3.1
+
+大于 Ctrl 和 EnsAve 预报. 然而, 随着预报时间的
+
+订正结果分析
+图 4 给出了一组不同预报方法下 Lorenz96 模
+
+型 X 变量的预报时间序列, 可以发现 4 种方法在
+不同的预报时段各有优劣. 在预报初始时刻 0—
+5 tus 时, Ctrl 和 EnsAve 的效果优于 Ctrl-ML 和
+Ens-ML; 在 预 报 中 期 20 —28 tus, Ctrl 和 CtrlML 的预报值最接近真值, Ens-ML 和 EnsAve 则
+略逊; 但是在 31 tus 时的波峰处, Ctrl 试验的结果
+却是误差最大的; 到后期 35—40 tus 时, EnsAve
+和 Ens-ML 的预报结果明显优于 Ctrl 和 Ctrl-ML.
+通过 R²和 MAE 等评价指标从整体表现来看, Ens-ML
+的 R²最大, MAE 和 RMSE 最小, 表明 Ens-ML 的
+表1
+
+不同预报方法的预报结果比较
+
+于 Ctrl 和 EnsAve 的误差, 尤其是 Ens-ML 表现
+最好. 此外, 根据预报序列与真值的 PAC 可以发
+现 , Ens-ML 优 于 EnsAve, 而 Ctrl-ML 与 Ctrl 的
+PAC 曲线重合, 这可能是在 Ctrl-ML 机器学习模
+型中, 只有 Ctrl 作为其特征变量, Ctrl-ML 只能学
+习到 Ctrl 的模式信息, 导致它们的 PAC 与真值的
+相关性较为一致. 但是, Ens-ML 则能综合多个集合
+成员的信息, 使得最后效果优于 EnsAve (图 5(b)).
+进一步比较 3 种不同方法相对于 Ctrl 的改进程度
+可以发现, 虽然两个机器学习模型在预报初期预
+报误差偏大, 提升比例为负 (图 6), 但是, 随着时
+间的演变 EnsAve, Ctrl-ML 和 Ens-ML 的预报误
+
+Table 1. Evaluation of forecast results in different
+forecasting methods.
+评价
+
+延长, Ctrl-ML 和 Ens-ML 的 RMSE 逐渐分别小
+
+差逐渐小于 Ctrl, 改进程度逐渐提高, 直到最后
+Ens-ML 提升比例最高可达 3% 以上, EnsAve 次
+
+方法
+Ctrl
+
+EnsAve
+
+Ctrl-ML
+
+Ens-ML
+
+之, Ctrl-ML 提升最小. 上述结果表明, 机器学习
+
+R²
+
+0.77
+
+0.82
+
+0.78
+
+0.83
+
+对集合预报和控制预报的整体性能是有提高作
+
+MAE
+
+0.90
+
+0.86
+
+0.97
+
+0.85
+
+用的, 并且以集合成员为特征建立的机器学习模
+
+MSE
+
+3.05
+
+2.40
+
+2.88
+
+2.31
+
+型明显优于基于单一控制预报试验建立的机器
+
+RMSE
+
+1.75
+
+1.55
+
+1.70
+
+1.52
+
+学习模型.
+
+Ctrl
+
+Ture
+
+10
+
+(a)
+
+5
+
+Value
+
+Value
+
+10
+
+0
+
+EnsAve
+
+5
+
+5
+
+10
+
+15
+
+20
+
+25
+
+30
+
+35
+
+40
+
+0
+
+5
+
+10
+
+Time step/tus
+10
+
+Ctrl-ML
+
+15
+
+20
+
+25
+
+30
+
+35
+
+40
+
+Time step/tus
+
+Ture
+
+10
+
+(c)
+
+5
+
+Value
+
+Value
+
+(b)
+
+0
+
+0
+
+0
+
+Ens-ML
+
+Ture
+
+(d)
+
+5
+
+0
+
+0
+
+5
+
+10
+
+15
+
+20
+
+25
+
+30
+
+35
+
+40
+
+Time step/tus
+
+图4
+
+Ture
+
+不同预报方法下 Lorenz96 模型的 X 变量时间序列
+
+0
+
+5
+
+10
+
+15
+
+20
+
+25
+
+30
+
+35
+
+40
+
+Time step/tus
+
+(a) Ctrl; (b) EnsAve; (c) Ctrl-ML; (d) Ens-ML(黑线为真值的时间序列)
+
+Fig. 4. The time series of X variable of Lorenz96 model for different forecast methods: (a) Ctrl; (b) EnsAve; (c) Ctrl-ML; (d) EnsML. Black line represents time series of true values.
+
+080503-4
+
+万方数据
+
+物 理 学 报 Acta Phys. Sin. Vol. 71, No. 8 (2022)
+3.0
+
+080503
+
+1.00
+
+(a)
+
+(b)
+
+0.95
+
+2.5
+2.0
+
+Mean PAC
+
+Mean RMSE
+
+0.90
+
+1.5
+1.0
+Ctrl
+EnsAve
+Ens-ML
+Ctrl-ML
+
+0.5
+
+0
+
+10
+
+20
+
+30
+
+0.85
+0.80
+0.75
+Ctrl
+EnsAve
+Ens-ML
+Ctrl-ML
+
+0.70
+0.65
+0
+
+40
+
+10
+
+图5
+
+20
+
+30
+
+40
+
+Time step/tus
+
+Time step/tus
+
+不同预报方法得到的平均 RMSE (a) 和平均 PAC (b) 随时间步长的变化
+
+Fig. 5. The average RMSE (a) and average PAC (b) for different forecast methods.
+
+EnsAve
+Ctrl-ML
+Ens-ML
+
+40
+
+2
+
+Probability/%
+
+Percentage/%
+
+3
+
+Ens-ML
+EnsAve
+Ctrl-ML
+Ctrl
+
+50
+
+1
+0
+
+30
+20
+10
+
+-1
+
+0
+
+-2
+0
+
+10
+
+20
+
+30
+
+40
+
+[0,1)
+
+Time step/tus
+
+图6
+
+[1,2)
+
+[2,3)
+
+[3,4)
+
+[4,5)
+
+[5,6)
+
+RMSE
+
+EnsAve, Ens-ML, Ctrl-ML 相对于 Ctrl 预报的改进程度
+
+图7
+
+Fig. 6. The improvement of the EnsAve, Ens-ML and CtrlML compared to Ctrl.
+
+不同预报方法的误差概率分布
+
+Fig. 7. The probability distribution of forecast errors for different methods.
+
+图 7 给出了不同预报方法的误差概率分布, 可
+
+型提供更多的大气特征信息, 从而提高模型的预报
+
+以看出 Ens-ML 相比 EnsAve 略微提高了误差在
+
+精度. 综上所述, 整体来看机器学习模型提高了误
+
+[0, 2.5] 区间的分布概率, 降低了在 [2.5, 4.5] 区间
+
+差在低值区的概率, 降低了高值区的概率, 有助于
+
+的概率, 在高误差区间 [4.5, 6] 与 EnsAve 基本保
+
+提升整体预报效果, 并且集合成员数量对机器学习
+
+持一致. Ctrl-ML 相比 Ctrl 则更加明显, 显著提高
+
+模型的效果起着至关重要的影响.
+0.84
+
+差概率. 此外, 根据图 8 可以发现机器学习模型的
+
+0.82
+
+预报效果与集合成员的数量有重要联系. 在 Ens-
+
+0.80
+
+ML 模型中, 预报结果与真值的 R²随着集合成员
+
+2
+
+了 [1, 3] 区间的误差概率, 降低了 [3, 6] 区间的误
+
+0.78
+0.76
+
+的增加而增大. 这意味着机器学习依赖 NLLV 的
+
+0.74
+
+集合成员, 集合成员的增加能够显著提高模型的预
+
+0.72
+1
+
+报准确度. 这一结果也间接解释了 Ctrl-ML 模型
+预报效果明显不如 Ens-ML 的原因. 相对于 Ctrl
+试验单一成员, 集合成员更能够反映出大气系统的
+不确定性状态. 集合成员的增加能够给机器学习模
+080503-5
+
+万方数据
+
+图8
+
+2
+3
+4
+5
+6
+Numbers of ensemble member
+
+7
+
+Ens-ML 模型的 R² 随集合成员数的变化
+
+Fig. 8. Changes of the R² with the number of ensemble
+member used in the Ens-ML model.
+
+物 理 学 报 Acta Phys. Sin. Vol. 71, No. 8 (2022)
+
+3.2
+
+080503
+
+可以看出, Ens-ML, Ctrl-ML 的概率分布趋向与真
+
+个例表现与吸引子概率分布特征
+
+值是一致的, 这表明本试验建立的机器学习模型是
+
+前人的研究曾指出集合平均预报整体预报技
+
+可靠的, 吸引子的系统演化轨迹是基本不变的. 随
+
+巧优于单一控制预报, 但也存在一定比例的个例其
+
+着预报时间的延长, 不同时刻 Lorenz96 模型 X 变
+
+单一控制预报优于集合预报 [23]. 下文将进一步比
+
+量的概率分布总体上分布一致, 但 EnsAve, Ens-
+
+较 EnsAve, Ens-ML, Ctrl-ML 模型与 Ctrl 单一控
+
+ML 和 Ctrl-ML 三种方法的概率分布逐渐向中间
+
+制预报在 3000 个测试个例中的预报误差大小.
+
+均值部分收缩, 左右分布概率降低, 值域变窄, 峰
+
+在 试 验 初 期 0 tus 时 , EnsAve 和 Ens-ML 的
+
+度值越来越大, Ctrl 则始终与真值基本保持一致.
+
+试验个例与 Ctrl 的试验个例主要集中在对角线附
+
+其 中 Ens-ML 和 EnsAve 的 值 域 收 缩 最 为 明 显 ,
+
+近, 说明初期时这 3 种方法的个例误差大小相当
+
+Ctrl-ML 相较于 Ctrl 收缩程度大. 这说明机器学
+
+(图 9(a), (b), (c)). 随着预报时间的延长, 大多数
+
+习模型在训练学习过程中, 有着同集合预报一样偏
+
+个例的 EnsAve 和 Ens-ML 模型误差小于 Ctrl, 该
+
+向平均态的特征且比 EnsAve 效果更好, 从而提高
+
+结果与前人研究一致. 除此之外, 由于 Ctrl-ML 模
+
+了预报技巧, 但左右极值分布概率的降低意味对极
+
+型的构建过程使用的特征变量只有 Ctrl 成员, 使
+
+端事件的预报技巧是下降的.
+
+得机器学习算法在对其训练过程中只有单一特征
+
+图 11 给出了 4 种方法的预报值与真值的分布
+
+信息与真值对应学习, 导致与 Ctrl 自身个例的对
+
+对比, 也可以看出 Ens-ML 和 EnsAve 更集中更靠
+
+比中整体呈现出线性变化趋势.
+
+近真值分布, Ctrl-ML 次之, 而 Ctrl 较前三者分布
+
+Lorenz96 模型中吸引子的概率分布可以揭示
+
+最为发散, 预报技巧最差. 可以发现在极值两端,
+
+系统变量在演化过程中的状态特征, 图 10 给出了
+
+更多 Ctrl 预报点偏向极值, 而 EnsAve 和 Ens-ML
+
+3000 测试个例采用 4 种不同预报方法在整个预报
+
+则明显比 Ctrl 要小得多, 这说明 EnsAve 和 Ens-ML
+
+周期中 Lorenz96 模型的 X 变量的概率分布. 由此
+
+与真值的误差更小, 比 Ctrl 更接近真值.
+
+Error of EnsAve
+
+0 tus
+
+10 tus
+
+Error of Ctrl-ML
+
+30 tus
+
+40 tus
+
+ (a)
+
+ (d)
+
+ (g)
+
+ (j)
+
+ (m)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Error of ctrl
+
+
+
+
+
+
+
+
+
+
+
+
+
+Error of ctrl
+
+
+
+
+
+
+
+
+
+Error of ctrl
+
+
+
+
+
+
+
+
+
+
+
+Error of ctrl
+
+ (e)
+
+ (h)
+
+ (k)
+
+ (n)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Error of ctrl
+
+
+
+
+
+
+
+
+
+Error of ctrl
+
+
+
+
+
+
+
+
+
+
+
+Error of ctrl
+
+ (f)
+
+ (i)
+
+ (l)
+
+ (o)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Error of ctrl
+
+
+
+
+
+
+
+
+
+
+
+Error of ctrl
+
+
+
+
+
+
+
+
+
+
+
+
+
+Error of ctrl
+
+图 9 试验个例在不同时刻的 EnsAve, Ctrl-ML 和 Ens-ML 与 Ctrl 的预报误差
+(j)—(l) 30 tus; (m)—(o) 40 tus
+
+
+
+
+
+
+
+
+
+Error of ctrl
+
+
+
+
+
+
+
+
+
+
+
+Error of ctrl
+
+ (c)
+
+
+
+
+
+Error of ctrl
+
+ (b)
+
+Error of ctrl
+Error of Es-ML
+
+20 tus
+
+
+
+
+
+
+
+
+
+
+
+
+
+Error of ctrl
+
+(a)—(c) 0 tus; (d)—(f) 10 tus; (g)—(i) 20 tus;
+
+Fig. 9. Scatterplot of forecast error at different leading times between the EnsAve, Ctrl-ML, Ens-ML and the Ctrl, respectively:
+(a)–(c) 0 tus; (d)–(f) 10 tus; (g)–(i) 20 tus; (j)–(l) 30 tus; (m)–(o) 40 tus .
+
+080503-6
+
+万方数据
+
+物 理 学 报 Acta Phys. Sin. Vol. 71, No. 8 (2022)
+All samples
+
+0 tus
+
+6
+Ens-ML
+Ctrl-ML
+EnsAve
+Ctrl
+True
+
+2
+0
+[-10,-9)
+
+8
+6
+4
+2
+
+8
+6
+4
+2
+
+0
+[10,11)
+
+[0,1)
+
+10
+Probability/%
+
+8
+
+0
+
+[-10,-9)
+
+[10,11)
+
+[0,1)
+
+ value
+
+[-10,-9)
+
+ value
+12
+
+20 tus
+
+[10,11)
+
+[0,1)
+ value
+
+30 tus
+
+40 tus
+12
+
+10
+8
+6
+4
+
+Probability/%
+
+10
+Probability/%
+
+Probability/%
+
+10 tus
+
+10
+Probability/%
+
+Probability/%
+
+10
+
+4
+
+080503
+
+8
+6
+4
+2
+
+2
+0
+[10,11)
+
+[0,1)
+
+8
+6
+4
+2
+
+0
+
+[-10,-9)
+
+10
+
+0
+[0,1)
+
+[-10,-9)
+
+[10,11)
+
+[-10,-9)
+
+ value
+
+ value
+
+图 10
+
+[0,1)
+
+[10,11)
+
+ value
+
+不同预报方法中 X 变量状态的概率分布随时间的变化
+
+Fig. 10. Probability distributions of X variables for different leading times.
+
+10
+
+10
+
+10
+
+5
+0
+-5
+
+Predicted value
+
+15 (c)
+
+Predicted value
+
+15 (b)
+
+Predicted value
+
+15 (a)
+
+5
+0
+-5
+
+Ctrl
+Ctrl-ML
+
+-10
+-10 -5
+
+0
+5
+True
+
+10
+
+15
+
+图 11
+
+5
+0
+-5
+
+Ctrl
+Ens-ML
+
+-10
+-10 -5
+
+0
+5
+True
+
+10
+
+15
+
+Ctrl
+EnsAve
+
+-10
+-10 -5
+
+0
+5
+True
+
+10
+
+15
+
+不同预报方法的结果与真实状态的对比分布
+Fig. 11. Scatterplot of the forecast value.
+
+综上所述, 随着预报时间的推移, 多数个例的
+
+建了基于控制预报和 NLLV 集合预报的机器学习
+
+Ctrl 误差逐渐大于 EnsAve 和机器学习模型, 并且
+
+模型, 初步探究了机器学习算法改进 NLLV 集合
+
+机器学习模型和 EnsAve 的吸引子的概率分布出
+
+预报效果的可行性, 得到的主要结论如下.
+
+现值域变窄, 峰度值增大的特点, 总得说来 Ens-
+
+1) 机器学习能够有效提高 NLLV 集合预报的
+
+ML, Ctrl-ML 和 EnsAve 的预报技巧均优于 Ctrl,
+
+预报技巧, 且其预报改进程度明显依赖于构建机器
+
+其中又以 Ens-ML 预报效果最佳.
+
+学习模型的集合成员数, 增加集合成员数能够减小
+预报初期的过拟合现象, 提高预报结果与真值之间
+
+4 结
+
+的相关系数, 究其原因可能是较多的集合成员能够
+
+论
+
+提供更多的特征变量信息, 使得机器学习训练的模
+
+本文基于 Lorenz96 模型, 借助岭回归算法构
+
+型精度更高.
+
+080503-7
+
+万方数据
+
+物 理 学 报 Acta Phys. Sin. Vol. 71, No. 8 (2022)
+
+验中后期尤为明显. 从吸引子的概率分布来看, 机
+
+[13]
+[14]
+[15]
+[16]
+
+器学习和集合平均都具有值域收缩、峰度增大并向
+
+[17]
+
+2) 就试验个例表现而言, 随着时间的演变, 控
+制预报误差大于其他 3 种方法的个例数增多, 在试
+
+平均值靠拢的特点, 且机器学习比集合平均表现更
+突出, 说明机器学习模型的预报结果优于集合平均
+
+[18]
+
+和控制预报.
+本研究基于 Lorenz96 模型利用机器学习算法
+
+[19]
+
+订正 NLLV 集合预报结果, 期望进一步改进其预
+报技巧. 研究发现, 机器学习模型在中后期对集合
+
+[20]
+
+预报有较为明显的改进, 同时在预报初期有一定的
+过拟合现象. 虽然, 增加集合成员数目能够一定程
+度上解决初期的过拟合现象, 但也意味着会增加计
+
+[21]
+
+算量, 需要更多的计算资源.
+
+参考文献
+[1]
+[2]
+[3]
+[4]
+[5]
+[6]
+
+[7]
+[8]
+[9]
+[10]
+[11]
+[12]
+
+Lorenz E N 1963 J. Atmos. Sci. 20 130
+Leith C E 1974 Mon. Wea. Rev. 102 409
+Epstein E S 1969 Tellus 21 739
+Zhang L F, Luo Y 2010 Sci. Meteor. Sin. 30 650 (in Chinese)
+[张立凤, 罗雨 2010 气象科学 30 650]
+Du J, Li J 2014 Adv. Meteor. Sci. Tech. 4 6 (in Chinese) [杜
+钧, 李俊 2014 气象科技进展 4 6]
+Duan W S, Wang Y, Huo Z H, Zhou F F 2019 Clim. Env.
+Res. 24 396 (in Chinese) [段晚锁, 汪叶, 霍振华, 周菲凡 2019
+气候与环境研究 24 396]
+Du J, Chen J 2010 Meteor. Mon. 36 1 (in Chinese) [杜钧, 陈
+静 2010 气象 36 1]
+Toth Z, Kalnay E 1997 Mon. Wea. Rev. 125 3297
+Toth Z, Kalnay E 1993 Bull. Amer. Meteor. Soc. 74 2317
+Molteni F, Buizza R, Palmer T N, Petroliagis T 1996 Q. J.
+R. Meteor. Soc. 122 73
+Bishop C H, Toth Z 1999 J. Atmos. Sci. 56 1748
+Evensen G 2003 Ocean Dyn. 53 343
+
+[22]
+[23]
+
+[24]
+
+[25]
+[26]
+[27]
+[28]
+[29]
+[30]
+
+[31]
+
+080503-8
+
+万方数据
+
+080503
+
+Duan W, Huo Z 2016 J. Atmos. Sci. 73 997
+Feng J, Ding R, Liu D, Li J 2014 J. Atmos. Sci. 71 3554
+Ding R Q, Li J, Li B 2017 Adv. Atmos. Sci. 34 1027
+Norwood A, Kalnay E, Ide K, Yang S-C, Wolfe C 2013 J.
+Phys. A:Math. Theor. 46 254021
+Li J, Wei P, Dai X Z, Zhao S, Zhang B Y, Lv L L, Hu J N
+2021 Res. Env. Sci. 34 872 (in Chinese) [李娟, 尉鹏, 戴学之,
+赵森, 张博雅, 吕玲玲, 胡京南 2021 环境科学研究 34 872]
+He S P, Wang H J, Li H, Zhao J Z 2021 Trans. Atmos. Sci.
+44 26 (in Chinese) [贺圣平, 王会军, 李华, 赵家臻 2021 大气科
+学学报 44 26]
+Kang J F, Tan J L, Fang L, Xiao Y L, 2021 Chi. Env. Sci. 41
+4016 (in Chinese) [康俊锋, 谭建林, 方雷, 肖亚来 2021 中国环
+境科学 41 4016]
+Fu X D, Wang J Y, Li L Y, Chen J C, Su S X, Chang W,
+Wang M 2021 J. Lanzhou Univ. (Natural Sciences) 57 503 (in
+Chinese) [付旭东, 王金艳, 李龙燕, 陈金车, 苏士翔, 常伟, 王明
+2021 兰州大学学报(自然科学版) 57 503]
+Men X L, Jiao R L, Wang D, Zhao C G, Liu Y K, Xia J J, Li
+H C, Yan Z W, Sun J H, Wang L Z 2019 Clim. Env. Res. 24
+116 (in Chinese) [门晓磊, 焦瑞莉, 王鼎, 赵晨光, 刘亚昆, 夏江
+江, 李昊辰, 严中伟, 孙建华, 王立志 2019 气候与环境研究 24
+116]
+Ham Y G, Kim J H, Luo J J 2019 Nature 573 568
+Liang D, Gu B, Ding R Q, Li J P, Zhong Q J 2018 Acta
+Phys. Sin. 67 070501 (in Chinese) [梁丁, 顾斌, 丁瑞强, 李建
+平, 钟权加 2018 物理学报 67 070501]
+Lorenz E N 1996 Predictability: A problem partly solved.
+Proc. Seminar on Predictability, Vol. I, Reading, United
+Kingdom, ECMWF, 1–18.
+Feng J, Ding R Q, Li J P, Liu D Q 2016 Adv. Atmos. Sci. 33
+1036
+Hou Z, Li J, Ding R, Feng J, Duan W 2018 Clim. Dynam. 51
+283
+Feng J, Li J P, Ding R Q, Toth Z 2018 J. Atmos. Sci. 75
+1073
+Hoerl A E, Kennard R W 1970 Technometrics 12 69
+Bager A, Roman M, Algelidh M, Mohammed B 2017 J. Soc.
+Econo. Stat. 6 30
+Hu Z Z, Chen C F, Hu B J 2021 Acta. Sci. Circum. 41 4228
+(in Chinese) [胡占占, 陈传法, 胡保健 2021 环境科学学报 41
+4228]
+Murphy A H, Epstein E S 1989 Mon. Wea. Rev. 117 572
+
+物 理 学 报 Acta Phys. Sin. Vol. 71, No. 8 (2022)
+
+080503
+
+Machine learning based method of correcting nonlinear local
+Lyapunov vectors ensemble forecasting*
+Kang Jun -Feng 1)
+
+Feng Song -Jiang 1)2)
+
+Ding Rui -Qiang 3)
+
+Zou Qian 2)4)
+
+Li Yan -Jie 2)
+
+Zhong Quan -Jia 2)†
+
+1) (School of Civil and Surveying & Mapping Engineering, Jiangxi University of Science and Technology, Ganzhou 341000, China)
+2) (State Key Laboratory of Numerical Modeling for Atmospheric Sciences and Geophysical Fluid Dynamics (LASG), Institute of
+Atmospheric Physics, Chinese Academy of Sciences, Beijing 100029, China)
+3) (State Key Laboratory of Earth Surface Processes and Resource Ecology, Beijing Normal University, Beijing 100875, China)
+4) (College of Earth Science, University of Chinese Academy of Sciences, Beijing 100049, China)
+( Received 7 December 2021; revised manuscript received 30 December 2021 )
+
+Abstract
+In this study, the feasibility and effectiveness of machine learning algorithm to improve ensemble forecasts
+using nonlinear local Lyapunov vectors (NLLVs) are explored preliminarily based on the Lorenz96 model. The
+results show that the machine learning model (Ens-ML) based on the ridge regression algorithm and the results
+of NLLV ensemble forecasting can effectively improve the overall forecasting skill. The Ens-ML outperforms the
+ensemble-averaged forecasting (EnsAve) and control forecasts (Ctrl) as well as the machine learning model
+based on Ctrl results (Ctrl-ML). It is also found that the improvement of forecasting skill depends on the total
+number of ensemble members used in the Ens-ML model, i.e. the increase of the number of ensemble members
+is conducive to the improvement of forecasting skill and to the decrease of overfitting in the early stage. By
+comparing the performances among different experimental cases, we find that the experimental forecasting
+errors of Ens-ML, Ctrl-ML and EnsAve are gradually smaller than that of Ctrl as the forecasting time increases.
+The attractors forecasted by Ens-ML, Ctrl-ML and EnsAve are also analyzed. Their attractor probability
+distributions show a contraction of the value domain, an increase in kurtosis and a convergence to the mean,
+especially for Ens-ML.
+
+Keywords: machine learning, nonlinear local Lyapunov vectors, ensemble forecasting, Lorenz96 model
+
+PACS: 05.45.–a, 92.60.Wc
+
+DOI: 10.7498/aps.71.20212260
+
+* Project supported by the National Natural Science Foundation of China (Grant Nos. 42105059, 41975070), the Shanghai
+Typhoon Research Foundation (Grant No. TFJJ202108), and the Jiangxi 03 and 5G project, China (Grant No.
+20204ABC03A04).
+† Corresponding author. E-mail: zqj@lasg.iap.ac.cn
+
+080503-9
+
+万方数据
+
+

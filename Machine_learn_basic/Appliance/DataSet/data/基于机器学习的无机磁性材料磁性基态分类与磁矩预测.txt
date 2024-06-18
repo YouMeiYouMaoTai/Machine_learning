@@ -1,0 +1,1528 @@
+物 理 学 报 Acta Phys. Sin. Vol. 71, No. 6 (2022)
+
+060202
+
+基于机器学习的无机磁性材料磁性
+基态分类与磁矩预测*
+黎威 1)
+
+龙连春 1)†
+
+刘静毅 1)
+
+1) (北京工业大学材料与制造学部, 北京
+2) (中国科学院物理研究所, 北京
+
+杨洋 2)
+
+100124)
+
+100190)
+
+(2021 年 9 月 1 日收到; 2021 年 11 月 22 日收到修改稿)
+
+磁性材料是信息时代重要的基础材料, 不同的磁性基态是磁性材料广泛应用的前提, 其中铁磁基态是高
+性能磁性材料的关键要求. 本文针对材料项目数据库中的无机磁性材料数据, 采用机器学习技术实现无机磁
+性材料铁磁、反铁磁、亚铁磁和顺磁基态的分类以及无机铁磁性材料磁矩的预测. 提取了材料的元素和结构
+属性特征, 通过两步式特征选择方法分别为磁性基态分类和磁矩预测筛选了 20 个材料特征, 发现材料特征
+中的电负性、原子磁矩和原子外围轨道未充满电子数对两种磁性性能具有重要贡献. 基于机器学习的随机森
+林算法, 构建了磁性基态分类模型和磁矩预测模型, 采用 10 折交叉验证的方法对模型进行定量评估, 结果表
+明所构建的模型具有足够的精度和泛化能力. 在测试检验中, 磁性基态分类模型的准确率为 85.23%, 精确率为
+85.18%, 召回率为 85.04%, F1 分数为 85.24%; 磁矩预测模型的拟合优度为 91.58%, 平均绝对误差为 0.098 µB/atom.
+本研究为无机铁磁性材料的高通量分类筛选与磁矩预测提供了新的方法和选择, 可为新型无机磁性材料的
+设计研发提供参考.
+
+关键词：机器学习, 随机森林, 磁性基态, 磁矩
+PACS：02.60.Pn, 75.50.Gg, 32.10.Dk
+
+DOI: 10.7498/aps.71.20211625
+
+磁滞回线, 反映材料的磁化性能 [10]. 因此, 研究铁
+
+1 引
+
+磁性材料的磁矩十分重要.
+
+言
+
+由于材料的实验测试既昂贵又耗时 [11], 材料
+
+磁性材料种类繁多、用途广泛, 在磁记录、磁
+
+科学家们在实验制备测试材料的同时, 使用密度泛
+
+致伸缩、磁润滑、磁致冷和磁传感器等领域具有重
+
+函理论 (density functional theory, DFT) 进行材
+
+[1−4]
+
+. 按照磁性物理学的划分, 材料的磁性
+
+料性能计算. 然而, 对于复杂的材料结构, 精确的
+
+基态可分为磁有序的铁磁基态、反铁磁基态、亚铁
+
+DFT 计算也会消耗大量时间. 多年来, 通过 DFT
+
+磁基态和磁无序的顺磁基态. 其中, 铁磁基态是未
+
+计算产生了一些大型材料数据库, 如无机晶体结构
+
+来高性能磁性材料的关键要求之一 [5], 根据铁磁基
+
+数据库 [12]、开放量子材料数据库 [13] 和材料项目
+
+态产生的铁磁性材料在传感与控制、信息处理、信
+
+数据库 [14] 等. 面对海量材料数据, 如何通过数据技
+
+息存储等技术领域具有重要的应用价值 [6−8]. 从宏
+
+术手段从中提取知识, 避免重复运算, 浪费算力,
+
+观角度来说, 长程有序排列的磁矩是材料铁磁性产
+
+成为关注的热点 [15]. 近年来, 许多研究者将机器学
+
+生的原因 [9], 通过磁矩可以得到材料的磁化强度、
+
+习 (machine learning, ML) 技术应用于材料研究,
+
+要应用
+
+* 国家重点研发计划 (批准号: 2018YFB0703500) 资助的课题.
+† 通信作者. E-mail: longlc@bjut.edu.cn
+
+© 2022 中国物理学会 Chinese Physical Society
+
+http://wulixb.iphy.ac.cn
+060202-1
+
+万方数据
+
+物 理 学 报 Acta Phys. Sin. Vol. 71, No. 6 (2022)
+
+060202
+
+主要分为预测材料性能和发现新材料两个方面 [16].
+在预测材料性能方面, Isayev 等 [17] 构建了一种材
+料特征计算工具, 使用 ML 中的梯度提升决策树算
+法预测了无机晶体材料的六种热机械性能; 寇雯博
+
+2 方
+2.1
+
+法
+
+数据集建立
+
+等 [18] 提出了一种小波-ML 混合方法, 可用于混杂
+
+通过材料项目数据库的应用程序接口 [24] 获取
+
+复合材料等效热传导性能的预测. 在发现新材料方
+
+了 98888 条无机磁性材料数据, 包含材料的化学
+
+面,
+
+杨自欣等 [19]
+
+构建了用于预测铅基钙钛矿材料
+
+式、CIF 文件、磁性基态和晶胞磁矩信息. 针对本
+
+铁电居里温度的 ML 模型, 使用得到的模型筛选出
+
+文的研究对象, 对数据集中无机磁性材料的磁性基
+
+了 2 种目标钙钛矿铁电材料; Lu 等 [20] 采用 DFT
+
+态和无机铁磁性材料的晶胞磁矩进行描述性统计,
+
+计算结合 ML 预测的方式, 从 5158 个无铅杂化钙
+钛矿中筛选了 3 个稳定的钙钛矿材料. 这些研究展
+现了 ML 在计算材料领域的可行性.
+目前, 使用 ML 研究材料磁性基态主要关注铁
+磁和反铁磁基态的分类, 多种磁性基态分类的
+ML 研究有待发展. 例如, Long 等 [5] 从 AtomWork
+数据库 [21] 中收集了 1749 条铁磁基态和 1056 条反
+
+如图 1 所示. 图 1(a) 是四种磁性基态的数量分布,
+其中顺磁基态 (PM) 数据 58068 条, 铁磁基态 (FM)
+数 据 32248 条 , 亚 铁 磁 基 态 (FiM) 数 据 5733 条 ,
+反铁磁基态 (AFM) 数据 2839 条. 图 1(b) 展示了
+无机铁磁性材料晶胞磁矩的密度分布, 范围为 0—
+280 µB, 可以看到数据呈重尾分布, 类似于指数数据.
+
+铁磁基态的金属间化合物数据, 使用 ML 中的随机
+
+60000
+
+森林算法实现了金属间化合物的铁磁/反铁磁基态
+
+50000
+
+针对
+
+40000
+数量
+
+分类, 最终的分类准确率为 87%; Frey
+
+等 [22]
+
+(a)
+
+材料项目数据库中的 3153 种过渡金属氧化物训练
+
+30000
+
+了 ML 模型, 实现了过渡金属氧化物的铁磁/反铁
+
+20000
+
+磁基态分类, 分类模型的精确率和召回率的调和平
+
+10000
+
+均数 (F1 score) 为 85%. 虽然已有研究者使用 ML
+
+0
+
+PM
+
+预测材料磁矩, 但面向的是多种磁性基态材料, 相
+
+FM
+
+FiM
+
+AFM
+
+磁性基态
+
+关研究主要关注算法的准确性, 并没有分析材料特
+2500
+
+料作为一种重要的磁性材料, 针对性的机器学习研
+
+2000
+频数
+
+究具有重要意义. 如 Yamamoto[23]使用晶体图神经
+
+1500
+
+网络模型对开放量子材料数据库和材料项目数据
+
+1000
+
+库中的材料数据进行研究, 实现了非磁性材料/磁
+
+500
+
+性材料的分类和磁矩的预测, 最终集成分类模型的
+
+0
+
+感受性曲线下方面积 (AUC) 为 0.957, 集成预测模
+
+0
+
+本研究以无机磁性材料的四种磁性基态和无
+
+100
+
+图 1 材料数据集的描述性统计
+图; (b) 晶胞磁矩频数分布图
+
+机铁磁性材料的磁矩为研究对象, 计算了材料的元
+
+150
+
+200
+
+250
+
+(a) 磁性基态分布直方
+
+Fig. 1. Descriptive statistics of material data set: (a) Distribution histogram of the magnetic ground state; (b) frequency distribution of the unit cell magnetic moment.
+
+素和结构特征, 并通过两步法筛选材料特征, 确定
+了磁性基态分类与磁矩预测的重要材料属性. 基于
+测的 ML 模型, 使用多种评价指标对模型的 10 折
+
+50
+
+晶胞磁矩/mB
+
+型的平均绝对误差为 0.119 µB/atom.
+
+筛选后的材料特征, 训练了磁性基态分类和磁矩预
+
+(b)
+
+3000
+
+征, 缺少探讨单一磁性基态材料的磁矩. 铁磁性材
+
+2.2
+
+特征构建与特征选择
+
+交叉验证结果进行定量评估, 得到了性能最优的分
+
+通过 ML 技术建立材料属性与材料性能之间
+
+类模型和预测模型. 最后, 将两个模型应用于测试
+
+的映射, 需要提取数字化的材料特征变量. 利用材
+
+集中材料的磁性基态分类和磁矩预测, 验证了模型
+
+料信息平台 Matminer[25] 计算了数据集中材料的
+
+的精度和泛化能力.
+
+元素和结构特征, 共产生了 582 种材料特征. 其中
+060202-2
+
+万方数据
+
+物 理 学 报 Acta Phys. Sin. Vol. 71, No. 6 (2022)
+
+060202
+
+元素特征主要包括材料的组成、元素信息和电子排
+
+估. 其中, 分类模型的评估指标为: 准确率 (accur-
+
+布; 结构特征主要包括空间群数、晶胞体积和正弦
+
+acy)、精确率 (precision)、召回率 (recall) 和 F1 分
+
+库仑矩阵.
+
+数 (F1 score); 预测模型的评估指标为: 拟合优度
+
+冗余特征会导致模型的低效或过度拟合, 为了
+
+(R2) 和平均绝对误差 (MAE).
+
+克服此缺陷, 采用两步式特征选择方法去除冗余特
+
+为了捕获材料特征数据与材料磁性性能之间
+
+征. 第 1 步使用交叉验证递归特征消除 (RFECV)
+
+复杂的映射关系, 采用随机森林 (random forest,
+
+的方法, 逐一评估特征的重要性, 在保证模型精度
+
+RF)[26] 作为 ML 模型. RF 不需要对材料特征进行
+
+基本不下降的前提下, 去除冗余特征; 第 2 步采用
+
+缩放, 能够直观地得出材料特征与材料性能之间的
+
+ML 模型的特征排序, 进一步精简并选择出对模型
+
+关系. ML 模型的超参数会影响模型的拟合能力,
+
+最重要的特征. 通过两步式特征选择方法分别为磁
+
+通过网格搜索的方式分别对随机森林分类 (RFC)
+
+性基态分类模型和磁矩预测模型选择了 20 个特
+
+模型和随机森林回归 (RFR) 模型进行超参数优化,
+
+征, 如表 1 所列. 表中展示了选择出的 34 个重要
+
+得到模型的超参数如表 2 所列. 本研究中 ML 模型
+
+特征, 其中有 6 个特征为两个模型共用特征, 各个
+
+的训练、评估和超参数优化均通过 python 库中的
+
+特征的物理意义见附录表 A1 所列.
+
+scikit-learn[27] 实现, ML 模型的构建流程如图 2.
+
+2.3
+
+3 结果与讨论
+
+机器学习模型构建
+将选择出的材料特征数据与磁性性能数据组
+
+合为材料数据集, 按照 4∶1 的比例随机分为训练集
+和测试集. 首先使用训练集中的材料数据进行
+
+3.1
+
+模型训练结果
+
+3.1.1
+
+分类模型训练
+
+ML 模型的训练, 然后使用测试集中的材料数据检
+
+使用 RF 中的随机森林分类 (RFC) 构建了磁
+
+验 ML 模型的精度和泛化能力. ML 模型的训练和
+
+性基态分类模型, 完成了无机磁性材料铁磁、反铁
+
+检验过程均采用 10 折交叉验证的方法进行定量评
+
+磁、亚铁磁和顺磁基态的分类筛选. 在磁性基态分
+
+表1
+Table 1.
+
+基于两步式特征选择法获得的材料特征
+
+Material features obtained by the two-step feature selection method.
+
+特征类型
+
+元素
+
+结构
+
+特征
+Mode Electronegativity*
+
+Mean NdUnfilled*
+
+Max MeltingT
+
+Min Electronegativity
+
+Avg_dev NdUnfilled*
+
+Mode Number
+
+Range NUnfilled
+
+Max NdUnfilled
+
+Max Number
+
+Avg_dev NUnfilled
+
+Mean GSmagmom*
+
+Min NValence
+
+Max NUnfilled
+
+Range GSmagmom
+
+Range NfValence
+
+Mode NfUnfilled
+
+Avg_dev GSmagmom*
+
+Avg_dev NfValence
+
+Mean NfUnfilled
+
+Max GSmagmom
+
+Avg_dev NdValence
+
+Range NfUnfilled*
+
+Max AtomicWeight
+
+Mode MendeleevNumber
+
+Avg_dev NfUnfilled
+
+Mode AtomicWeight
+
+Avg_dev MendeleevNumber
+
+Max NfUnfilled
+
+Mean GSvolume_pa
+
+Min MendeleevNumber
+
+Range NdUnfilled
+
+Range MeltingT
+
+Vpa
+
+Sine coulomb matrix 0
+
+* 该特征同时用于磁性基态分类和磁矩预测.
+
+表2
+Table 2.
+
+本研究中机器学习模型的超参数
+
+Hyperparameters of the machine learning model in this study.
+
+模型
+
+超参数
+
+RFC
+
+n = 400, features = 'log2', samples_split = 2, samples_leaf = 1
+
+RFR
+
+n = 300, features = 'auto', samples_split = 2, samples_leaf = 1
+
+060202-3
+
+万方数据
+
+物 理 学 报 Acta Phys. Sin. Vol. 71, No. 6 (2022)
+
+060202
+
+虽小, 但是排名靠前, 可见结构特征在四种磁性基
+
+无机磁性
+材料数据
+
+态分类时起到了关键作用.
+
+3.1.2
+磁性基态
+数据
+
+磁矩
+数据
+
+预测模型训练
+
+基于获得的分类模型, 使用 RF 中的随机森林
+回归 (RFR) 对无机铁磁性材料的磁矩进行预测分
+析. 为避免晶胞大小不同和晶胞中原子个数不同对
+
+两步式特征选择
+递归特征消除
+
+结果产生影响, 将磁矩值平均到晶胞中的每个原
+
+材料特征排序
+
+材料元素、结构特征
+
+子. 预测模型训练与分类模型训练相似, 采用两步
+法去除了对磁矩预测无关或影响较小的冗余材料
+
+材料训练
+数据
+
+特征. 第 1 步通过 RFECV 得到了 45 个材料特征,
+
+材料测试
+数据
+
+模型的平均拟合优度为 95.77%; 第 2 步通过 RFR
+的特征排序得到了 20 个材料特征, 此时模型的平
+均拟合优度为 94.68%, 如图 4(a) 所示. 图 4(b) 展
+
+随机森林
+算法
+
+超参数
+
+示的是预测模型的材料特征排序, 结构特征在经过
+
+磁性基态
+分类模型
+
+图2
+
+两步式的特征选择后被移除, 而化合价、电负性、f 轨
+
+磁矩
+预测模型
+
+道未充满电子数和材料原子磁矩等元素材料特征
+对无机铁磁性材料的磁矩预测提供了较大的贡献.
+
+机器学习模型的构建流程
+
+Fig. 2. Construction process of the machine learning model.
+
+3.2
+
+模型检验结果
+
+类模型的两步式特征选择中, 第 1 步通过 RFECV
+
+将材料数据集分为训练集和测试集, 模型的训
+
+方法将材料特征减少到了 82 个, 模型的平均分类
+
+练和交叉验证均在训练集上完成, 测试集数据在整
+
+准确率为 89.46%; 第 2 步通过 RFC 的特征排序选
+
+个模型构建过程中没有参与, 此时模型在训练集上
+
+择了排名靠前的 20 个材料特征对模型进行训练,
+
+的应用效果最能检验模型的精度和泛化能力.
+
+此时模型的平均分类准确率为 87.67%, 如图 3(a)
+
+3.2.1
+
+所示. 考虑到特征相关性, 第 2 步被剔除的材料特
+
+分类检验
+
+针对训练完成的磁性基态分类模型, 使用测试
+
+征对磁性基态的分类仍有少量贡献, 模型分类准确
+
+集检验其对无机磁性材料四种磁性基态的分类能
+
+率的略微下降在可控且合理的范围内. 图 3(b) 展
+
+力. 图 5(a) 是混淆矩阵, 它反映了磁性基态分类模
+
+示的是分类模型的材料特征排序结果, 其中, 材料
+
+型在测试集上的精度. 图 5(a) 中的数值表示行标
+
+原子磁矩、原子外围轨道未充满电子数等元素特征
+
+签材料被预测为列标签材料的数目, 可以看到 96.5%
+
+对磁性基态分类的贡献程度较大; 结构特征中的正
+
+的顺磁基态和 84.8% 的铁磁基态被正确分类, 反
+
+弦库仑矩阵、晶胞体积对磁性基态分类的贡献程度
+
+铁磁和亚铁磁基态的分类效果较差, 这可能是由于
+
+90.0
+Accuracy
+Precision
+Recall
+F1 score
+
+(a)
+
+89.5
+评价指标/%
+
+89.0
+88.5
+
+5.06%
+5.07%
+5.15%
+
+(b)
+
+42.43%
+
+5.32%
+6.13%
+
+88.0
+
+6.97%
+6.99%
+
+87.5
+
+8.66%
+8.22%
+
+87.0
+
+Vpa
+
+Sine coulomb matrix
+
+86.5
+
+Mean GSvolume_pa
+
+Avg_dev GSmagmom
+
+Avg_dev NUnfilled
+
+Mean NdUnfilled
+
+Range GSmagmom
+
+Range MeltingT
+
+Mean GSmagmom
+
+Others
+
+86.0
+
+0
+
+2
+
+4
+
+6
+
+8
+
+10
+
+10折交叉验证
+
+图3
+
+磁性基态分类模型的训练结果
+
+(a) 10 折交叉验证; (b) 材料特征排序
+
+Fig. 3. Training results of the magnetic ground state classification model: (a) 10-fold cross-validation; (b) ranking of material features.
+
+060202-4
+
+万方数据
+
+物 理 学 报 Acta Phys. Sin. Vol. 71, No. 6 (2022)
+97
+
+0.080
+0.075
+
+95
+
+0.070
+
+94
+
+0.065
+
+93
+
+0.060
+2
+MAE
+
+92
+91
+
+0
+
+2
+
+4
+6
+8
+10折交叉验证
+
+图4
+
+MAE/(mBSatom-1)
+
+2/%
+
+96
+
+0.055
+
+10
+
+44.27%
+
+3.3%
+3.73%
+4.76%
+5.07%
+
+(b)
+
+(a)
+
+5.4%
+5.49%
+6.78% 9.72%
+
+0.050
+
+磁矩预测模型的训练结果
+
+060202
+
+11.48%
+
+Min NValence
+
+Mode Electronegativity
+
+Range NfUnfilled
+
+Avg_dev NfUnfilled
+
+Avg_dev GSmagmom
+
+Mean NfUnfilled
+
+Max NfUnfilled
+
+Avg_dev NdUnfilled
+
+Avg_dev MendeleevNum
+
+Others
+
+(a) 10 折交叉验证; (b) 材料特征排序
+
+Fig. 4. Training results of the magnetic moment prediction model: (a) 10-fold cross-validation; (b) ranking of material features.
+89
+PM
+
+11062
+(96.5%)
+
+1
+(0%)
+
+28
+(0.2%)
+
+373
+(3.3%)
+
+AFM
+
+15
+(2.7%)
+
+153
+(27.0%)
+
+27
+(4.8%)
+
+371
+(65.5%)
+
+FiM
+
+60
+(5.2%)
+
+24
+(2.1%)
+
+481
+(41.9%)
+
+584
+(50.8%)
+
+FM
+
+684
+(10.4%)
+
+122
+(1.8%)
+
+200
+(3.0%)
+
+5593
+(84.8%)
+
+PM
+
+AFM
+
+FiM
+
+FM
+
+(b)
+
+Accuracy
+Precision
+Recall
+F1 score
+
+88
+评价指标/%
+
+真实标签
+
+(a)
+
+87
+86
+85
+84
+83
+82
+
+0
+
+2
+
+图5
+
+4
+
+6
+
+8
+
+10
+
+10折交叉验证
+
+预测标签
+
+磁性基态分类模型的检验结果
+
+(a) 混淆矩阵; (b) 10 折交叉验证
+
+Fig. 5. Test results of the magnetic ground state classification model: (a) Confusion matrix; (b) 10-fold cross-validation.
+
+数据库中反铁磁基态和亚铁磁基态的材料数量较
+
+3.2.2
+
+少, 数据分布不平衡导致. 从图 5(b) 的结果可以看
+出, 4 种分类评价指标的 10 折交叉验证结果都很
+平均, 说明模型没有过拟合和偏向抽样, 能够真实
+地反映磁性基态分类模型对四种磁性基态的分类
+效果. 同时, 将本研究的磁性基态分类模型与其他
+研究磁性基态分类的机器学习模型进行了对比, 如
+表 3 所列. 这两个研究实现了铁磁和反铁磁基态的
+分类, 属于二分类问题. 本研究实现了铁磁、反铁
+磁、亚铁磁和顺磁基态的分类, 属于四分类问题,
+而且进一步提升了分类效果.
+表3
+
+本研究磁性基态分类模型与其他研究者工
+
+作的定量评估对比
+Table 3. Quantitative evaluation of the magnetic
+ground state classification model in this study and in
+comparison with other works.
+
+预测检验
+
+为了检验磁矩预测模型对无机铁磁性材料磁
+矩的预测能力, 使用测试集中的磁矩数据进行预
+测, 观察预测值与真实值的拟合程度、误差范围.
+图 6(a) 展示了预测模型对磁矩的预测值和真实值
+对比, 图中蓝色圆圈对应不同的无机铁磁性材料,
+其横坐标为获得的预测模型对某材料磁矩的预测
+值, 纵坐标为该材料磁矩的真实值, 红色虚线表示
+预测值与真实值完全吻合时的情况. 从图 6(a) 可
+以看出, 对于测试集中 6450 条未参与训练的无机
+铁磁性材料, 预测模型对其磁矩的预测值都落在了
+真实值附近. 从图 6(b) 可以看出, 2 种评价指标的
+10 折交叉验证结果都很平均, 较训练集结果仅有
+略微下降, 说明磁矩预测模型没有过拟合, 对无机
+铁磁性材料的磁矩具有较好的预测能力. 同时, 也
+
+评价指标(平均值)
+
+本研究模型
+
+文献[5]
+
+文献[22]
+
+Accuracy/%
+
+85.23
+
+81.10
+
+—
+
+将本研究的磁矩预测模型与其他研究磁矩预测的
+
+Precision/%
+
+85.18
+
+84.29
+
+—
+
+机器学习模型进行了对比, 如表 4 所列, 本研究的
+
+Recall/%
+
+85.04
+
+85.51
+
+—
+
+机器学习模型对磁矩的预测具有更低的平均绝对
+
+F1 score/%
+
+85.24
+
+85.08
+
+85.00
+
+误差 (MAE).
+060202-5
+
+万方数据
+
+物 理 学 报 Acta Phys. Sin. Vol. 71, No. 6 (2022)
+
+2/%
+
+4
+3
+2
+1
+0
+
+0
+
+1
+
+2
+
+3
+
+4
+
+5
+
+6
+
+预测值/(mBSatom-1)
+
+图6
+
+95
+(b)
+94
+93
+92
+91
+90
+89
+88
+87
+86
+85
+0
+2
+
+0.13
+0.11
+0.09
+0.07
+2
+MAE
+4
+
+6
+
+8
+
+10
+
+0.05
+
+MAE/(mBSatom-1)
+
+2: 91.58%
+MAE: 0.098 mBSatom-1
+
+5
+
+/ (µ
+
+真实值/(mBSatom-1)
+
+6 (a)
+
+060202
+
+0.03
+
+10折交叉验证
+
+磁矩预测模型的检验结果
+
+(a) 预测值与真实值的拟合情况; (b) 10 折交叉验证
+
+Fig. 6. Test results of the magnetic moment prediction model: (a) Fitting degree between predicted value and real value; (b) 10-fold
+cross validation.
+
+表4
+
+本研究磁矩预测模型与其他研究者工作的
+[3]
+
+定量评估对比
+Table 4. Quantitative evaluation of the magnetic
+moment prediction model in this study and in comparison with other works.
+评价指标(平均值)
+
+本研究模型
+
+文献[23]
+
+R2/%
+
+91.58
+
+—
+
+0.098
+
+0.119
+
+MAE/(µB
+
+·atom-1)
+
+[4]
+
+[5]
+
+4 结
+
+论
+
+[6]
+
+本研究针对材料项目数据库中无机磁性材料
+的四种磁性基态和无机铁磁性材料的磁矩, 计算了
+统一的数字化材料特征, 这些特征包含材料的元素
+
+[7]
+[8]
+
+属性和结构属性描述, 使得构建的机器学习模型能
+够从中学习规律, 以低廉的计算成本实现磁性基态
+的分类和磁矩的预测:
+1) 通过两步式的特征选择方法, 发现了对磁
+
+[9]
+[10]
+
+性基态分类和磁矩预测具有重要贡献的材料特征,
+包括材料元素特征中的电负性、原子磁矩和原子外
+
+[11]
+
+围轨道未充满电子数, 显示了材料的组成元素性质
+
+[12]
+
+和电子排布与材料磁性性能之间的密切关系.
+
+[13]
+
+2) 基于随机森林算法, 建立了磁性基态分类
+模型和铁磁性材料磁矩预测模型. 在材料测试集的
+
+[14]
+
+检验中, 分类模型对四种磁性基态的平均分类准确
+率达 85.23%, 预测模型对磁矩预测的平均绝对误
+差仅为 0.098 µB/atom, 两个模型均展现了良好的
+精度和泛化能力.
+
+[15]
+[16]
+[17]
+
+参考文献
+
+[18]
+
+[1] Zhang Z D 2015 Acta Phys. Sin. 64 067503 (in Chinese) [张志
+东 2015 物理学报 64 067503]
+[2] Li L Z, Jiang J L, Wei R H, Li J P, Tian Y, Ding J N 2016
+
+[19]
+
+060202-6
+
+万方数据
+
+Acta Phys. Sin. 65 018103 (in Chinese) [李绿洲, 蒋继乐, 卫荣
+汉, 李俊鹏, 田煜, 丁建宁 2016 物理学报 65 018103]
+Sander D, Valenzuela S O, Makarov D, Marrows C H,
+Fullerton E E, Fischer P, McCord J, Vavassori P, Mangin S,
+Pirro P, Hillebrands B, Kent A D, Jungwirth T, Gutfleisch
+O, Kim C G, Berger A 2017 J. Phys. D: Appl. Phys. 50
+363001
+Vedmedenko E Y, Kawakami R K, Sheka D D, Gambardella
+P, Kirilyuk A, Hirohata A, Binek C, Chubykalo F O, Sanvito
+S, Kirby B J, Grollier J, Everschor S K, Kampfrath T, You C
+Y, Berger A 2020 J. Phys. D: Appl. Phys. 53 453001
+Long T, Fortunato N M, Zhang Y X, Gutfleisch O, Zhang H
+B 2021 Mater. Res. Lett. 9 169
+Yamada Y, Ueno K, Fukumura T, Yuan H T, Shimotani H,
+Iwasa Y, Gu L, Tsukimoto S, Ikuhara Y, Kawasaki M 2011
+Science 332 1065
+Yao Q S, Lu M, Du Y P, Wu F, Deng K M, Kan E J 2018 J.
+Mater. Chem. C 6 1709
+He C L, Xu H J, Tang J, Wang X, Wei J W, Shen S P, Chen
+Q Q, Shao Q M, Yu G Q, Zhang G Y, Wang S G 2021 Acta
+Phys. Sin. 70 127501 (in Chinese) [何聪丽, 许洪军, 汤建, 王
+潇, 魏晋武, 申世鹏, 陈庆强, 邵启明, 于国强, 张广宇, 王守国
+2021 物理学报 70 127501]
+Gong C, Zhang X 2019 Science 363 eaav4450
+Wang H Y, Liu H Y, Sun J F, Gu N 2018 Sci. Sin. Technol.
+48 921 (in Chinese) [王皓瑶, 刘海祎, 孙剑飞, 顾宁 2018 中国
+科学: 技术科学 48 921]
+Jha D, Choudhary K, Tavazza F, Liao W K, Choudhary A,
+Campbell C, Agrawal A 2020 Nat. Commun. 11 3643
+Belsky A, Hellenbrandt M, Karen V L, Luksch P 2002 Acta
+Crystallogr., Sect. B: Struct. Sci. 58 364
+Kirklin S, Saal J E, Meredig B, Thompson A, Doak J W,
+Aykol M, Ruhl S, Wolverton C 2015 NPJ Comput. Mater. 1
+15010
+Jain A, Ong S P, Hautier G, Chen W, Richards W D, Dacek
+S, Cholia S, Gunter D, Skinner D, Ceder G, Persson K A
+2013 APL Mater. 1 011002
+Schleder G R, Padilha A C M, Acosta C M, Costa M, Fazzio
+A 2019 J. Phys. Mater. 2 032001
+Liu Y, Zhao T L, Ju W W, Shi S Q 2017 J. Materialomics 3
+159
+Isayev O, Oses C, Toher C, Gossett E, Curtarolo S, Tropsha
+A 2017 Nat. Commun. 8 15679
+Kou W B, Dong H, Zou M Q, Han J Y, Jia X X 2021 Acta
+Phys. Sin. 70 030701 (in Chinese) [寇雯博, 董灏, 邹岷强, 韩均
+言, 贾西西 2021 物理学报 70 030701]
+Yang Z X, Gao Z R, Sun X F, Cai H L, Zhang F M, Wu X S
+2019 Acta Phys. Sin. 68 210502 (in Chinese) [杨自欣, 高章然,
+
+物 理 学 报 Acta Phys. Sin. Vol. 71, No. 6 (2022)
+孙晓帆, 蔡宏灵, 张凤鸣, 吴小山 2019 物理学报 68 210502]
+[20] Lu S H, Zhou Q H, Ouyang Y X, Guo Y L, Li Q, Wang J L
+2018 Nat. Commun. 9 3405
+[21] Xu Y B, Yamazaki M, Villars P 2011 Jpn. J. Appl. Phys. 50
+11RH02
+[22] Frey N C, Horton M K, Munro J M, Griffin S M, Persson K
+A, Shenoy V B 2020 Sci. Adv. 6 eabd1076
+[23] Yamamoto T https://storage.googleapis.com/rimcs_cgnn/
+cgnn_matsci_May_27_2019.pdf [2021-8-10]
+[24] Materials Project API https://materialsproject.org/open
+
+附
+
+060202
+
+[2021-8-10]
+[25] Ward L, Dunn A, Faghaninia A, Zimmermann N E R, Bajaj
+S, Wang Q, Montoya J, Chen J M, Bystrom K, Dylla M,
+Chard K, Asta M, Persson K A, Snyder G J, Foster I, Jain A
+2018 Comput. Mater. Sci. 152 60
+[26] Breiman L 2001 Mach. Learn. 45 5
+[27] Pedregosa F, Varoquaux G, Gramfort A, Michel V, Thirion
+B, Grisel O, Blondel M, Prettenhofer P, Weiss R, Dubourg V,
+Vanderplas J, Passos A, Cournapeau D, Brucher M, Perrot
+M, Duchesnay E 2011 J. Mach. Learn. Res. 12 2825
+
+录
+表 A1
+Table A1.
+
+基于两步式特征选择法获得的材料特征及其物理含义
+
+Material features and their physical meanings obtained by the two-step feature selection method.
+特征
+
+物理含义
+
+1
+
+Mode Electronegativity*
+
+材料组成元素电负性的众数
+
+2
+
+Min Electronegativity
+
+材料组成元素电负性的最小值
+
+3
+
+Range NUnfilled
+
+材料组成元素外围未充满电子数的范围
+
+4
+
+Avg_dev NUnfilled
+
+材料组成元素外围未充满电子数的平均偏差
+
+5
+
+Max NUnfilled
+
+材料组成元素外围未充满电子数的最大值
+
+6
+
+Mode NfUnfilled
+
+材料组成元素f轨道未充满电子数的众数
+
+7
+
+Mean NfUnfilled
+
+材料组成元素f轨道未充满电子数的平均值
+
+8
+
+Range NfUnfilled*
+
+材料组成元素f轨道未充满电子数的范围
+
+9
+
+Avg_dev NfUnfilled
+
+材料组成元素f轨道未充满电子数的平均偏差
+
+10
+
+Max NfUnfilled
+
+材料组成元素f轨道未充满电子数的最大值
+
+11
+
+Range NdUnfilled
+
+材料组成元素d轨道未充满电子数的范围
+
+12
+
+Mean NdUnfilled*
+
+材料组成元素d轨道未充满电子数的平均值
+
+13
+
+Avg_dev NdUnfilled*
+
+材料组成元素d轨道未充满电子数的平均偏差
+
+14
+
+Max NdUnfilled
+
+材料组成元素d轨道未充满电子数的最大值
+
+15
+
+Mean GSmagmom*
+
+材料组成元素磁矩的平均值
+
+16
+
+Range GSmagmom
+
+材料组成元素磁矩的范围
+
+17
+
+Avg_dev GSmagmom*
+
+材料组成元素磁矩的平均偏差
+
+18
+
+Max GSmagmom
+
+材料组成元素磁矩的最大值
+
+19
+
+Max AtomicWeight
+
+材料组成元素重量的最大值
+
+20
+
+Mode AtomicWeight
+
+材料组成元素重量的众数
+
+21
+
+Mean GSvolume_pa
+
+材料组成元素体积的平均值
+
+22
+
+Range MeltingT
+
+材料组成元素熔点的范围
+
+23
+
+Max MeltingT
+
+材料组成元素熔点的最大值
+
+24
+
+Mode Number
+
+材料组成元素原子序数的众数
+
+25
+
+Max Number
+
+材料组成元素原子序数的最大值
+
+26
+
+Min NValence
+
+材料组成元素价电子的最小值
+
+27
+
+Range NfValence
+
+材料组成元素f轨道价电子的范围
+
+28
+
+Avg_dev NfValence
+
+材料组成元素f轨道价电子的平均偏差
+
+29
+
+Avg_dev NdValence
+
+材料组成元素d轨道价电子的平均偏差
+
+30
+
+Mode MendeleevNumber
+
+材料组成元素门捷列夫数的众数
+
+31
+
+Avg_dev MendeleevNumber
+
+材料组成元素门捷列夫数的平均偏差
+
+32
+
+Min MendeleevNumber
+
+材料组成元素门捷列夫数的最小值
+
+33
+
+Vpa
+
+材料的晶胞体积
+
+34
+
+Sine coulomb matrix 0
+
+正弦库仑矩阵的第0个特征值
+
+* 该特征同时用于磁性基态分类和磁矩预测.
+
+060202-7
+
+万方数据
+
+物 理 学 报 Acta Phys. Sin. Vol. 71, No. 6 (2022)
+
+060202
+
+Classification of magnetic ground states and prediction of
+magnetic moments of inorganic magnetic
+materials based on machine learning*
+Li Wei 1)
+
+Long Lian -Chun 1)†
+
+Liu Jing -Yi 1)
+
+Yang Yang 2)
+
+1) (Faculty of Materials and Manufacturing, Beijing University of Technology, Beijing 100124, China)
+2) (Institute of Physics, Chinese Academy of Sciences, Beijing 100190, China)
+( Received 1 September 2021; revised manuscript received 22 November 2021 )
+
+Abstract
+Magnetic materials are important basic materials in the information age. Different magnetic ground states
+are the prerequisite for the wide application of magnetic materials, among which the ferromagnetic ground state
+is a key requirement for future high-performance magnetic materials. In this paper, machine learning is used to
+study the classification of ferromagnetic, antiferromagnetic, ferrimagnetic and paramagnetic ground states of
+inorganic magnetic materials and the prediction of magnetic moments of inorganic ferromagnetic materials. We
+obtain 98888 inorganic magnetic materials data from the Materials Project database, containing material ids,
+chemical formulae, CIF files, magnetic ground states and magnetic moments, and extract 582 elemental and
+structural features for the inorganic magnetic materials by using Matminer. We design a two-step feature
+selection method. In the first step, RFECV is used to evaluate material features one by one to remove
+redundant features without degrading the model accuracy. In the second step, we rank the material features to
+further refine and select the most important material features for the model, and 20 material features are
+selected for the classification of magnetic ground states and the prediction of magnetic moments, respectively.
+Among the selected material features, it is found that the electronegativity, the atomic own magnetic moment
+and the number of unfilled electrons in the atomic peripheral orbitals all make important contributions to the
+classification of magnetic ground states and the prediction of magnetic moments. We build a magnetic ground
+state classification model and a magnetic moment prediction model by using the random forest, and
+quantitatively evaluate the machine learning models by using the 10-fold cross-validation approach, and the
+results show that the constructed machine learning models has sufficient accuracy and generalization capability.
+In the test set, the magnetic ground state classification model has an accuracy of 85.23%, a precision of 85.18%,
+a recall of 85.04%, and an F1 score of 85.24%; the magnetic moment prediction model has a goodness-of-fit of
+91.58% and an average absolute error of 0.098 µB per atom. This study provides a new method and choice for
+high-throughput classification and screening of magnetic ground states of inorganic magnetic materials and
+predicting the magnetic moment of ferromagnetic materials.
+
+Keywords: machine learning, random forest, magnetic ground state, magnetic moment
+
+PACS: 02.60.Pn, 75.50.Gg, 32.10.Dk
+
+DOI: 10.7498/aps.71.20211625
+
+* Project supported by the National Key R&D Program of China (Grant No. 2018YFB0703500).
+† Corresponding author. E-mail: longlc@bjut.edu.cn
+
+060202-8
+
+万方数据
+
+

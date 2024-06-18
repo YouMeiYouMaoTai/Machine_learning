@@ -1,0 +1,636 @@
+第４１卷 ，第１２期
+２０２１年１２月
+
+Vol. ４１ ，No. １２ ，pp３８５７-３８６３
+December ，２０２１
+
+光 谱 学 与 光 谱 分 析
+Spectroscopy and Spectral Analysis
+
+结合高光谱成像和机器学习的棉种年份鉴别
+段
+
+龙１ ，鄢天荥１ ，王江丽２ ，３ ，叶伟欣１ ，陈
+
+伟１ ，高
+
+１ ．石河子大学信息科学与技术学院 ，新疆 石河子
+
+新２ ，３ *
+
+８３２００３
+
+２ ．新疆生产建设兵团生态农业重点实验室 ，新疆 石河子
+３ ．石河子大学农学院 ，新疆 石河子
+
+攀１ ，２ * ，吕
+
+８３２００３
+
+８３２００３
+
+摘 要 棉花精量播种技术目前已经在新疆兵团全面推广 ，该技术能精确实现一穴一粒的农艺技术指标 ，
+但是也对高质量棉种的筛选提出了更高的要求 。为了避免播种往年活力不足的棉种而导致发芽率降低的问
+题 ，结合机器学习和近红外（NIR）高光谱成像技术 （HSI）进行棉种年份精确鉴别 ，实现棉种的快速无损筛
+选 。采集 ２０１６ 年 — ２０１９ 年近四年外观无明显差异的棉种各 ３６０ 粒 ，共 １ ４４０ 粒棉种（按照 ３ ∶ １ ∶ １ 划分训练
+集 、验证集和测试集）作为样本 ，按照每批 ６０ 粒采集 ９１５ ～ １ ６９８ nm 范围的棉种高光谱图像 ，去除首尾两端
+噪声大的光谱 ，保留 １ ００２ ～ １ ６０２ nm 范围的光谱为原始数据 。 利用 Savitzky-Golay （SG ）平滑算法对光谱进
+行预处理 ，采用主成分载荷方法 （PCA-loading ）选取 １３ 个特征波段 ，基于全部光谱数据和特征波段 （ ± １０
+nm）数据建立逻辑回归（LR） 、偏最小二乘判别分析 （PLS-DA ） 、支持向量机（SVM ） 、 循环神经网络 （RNN ） 、
+长短记忆网络（LST M ）和卷积神经网络（CNN ）六种分类模型 。使用全光谱数据建模时 ，六种分类模型在测试
+集上的鉴别准确率分别为 ９６. ２７％ ，９８. ９８％ ，９９. ３２％ ，９６. ９５％ ，９７. ６３％ 和 １００％ ，其中 CNN 和 SVM 模型
+取得了较好的结果 ；使用特征光谱数据建模时 ，六种分类模型在测试集上的鉴别精度分别为 ９３. ５６％ ，
+９７. ２９％ ，９８. ３０％ ，９５. ２５％ ，９４. ２４％ 和 ９９. ６６％ ，其中 CNN 和 SVM 模型仍有较好的分类结果 。结果表明 ，
+使用全光谱数据建模时 ，六种分类模型都可以实现较高精度的棉种年份鉴别 ，使用特征光谱数据建模时
+CNN 和 SVM 模型的鉴别精度仍可达到 ９８％ ；其中深度学习方法优于传统机器学习方法 ，但是传统机器学
+习方法仍能保持较好的鉴别准确率 。因此 ，结合近红外高光谱成像技术和机器学习方法能够实现棉种年份
+的高精度鉴别 ，为棉花精量播种过程中的优质棉种选种技术提供理论依据和方法 。
+关键词 高光谱成像 ；棉种年份鉴别 ；卷积神经网络 ；机器学习
+中图分类号 ：O６５７. ３
+文献标识码 ：A
+ＤＯＩ ：１０. ３９６４ ／j. issn. １０００-０５９３（２０２１）１２-３８５７-０７
+别棉种年份尤为重要 。
+
+引 言
+
+种子年份鉴别的传统方法包括经验鉴别和化学分析 ，采
+用经验鉴别时 ，对鉴别经验要求较高 ，鉴别准确率不稳定 ；
+
+棉花种植面积不断扩大 ，为深入推进棉花全程机械化战
+略目标 ，棉花精量播种技术受到了充分重视 。 该技术要求精
+确实现一穴一粒的农艺技术指标 ，因此对棉种质量提出了严
+格的要求 。棉种破损程度和储存的年限是棉种质量的两个重
+要评价指标 。高攀等
+
+[１ ]
+
+利用近红外高光谱成像技术实现了微
+
+破损棉种的无损检测 ；但对外观无明显差异 ，年份却不同的
+棉种鉴别尚未见相关研究 。储藏时间较长的棉种 ，其种子活
+力和发芽率会严重降低[２] ，混入正常棉种中并进行精量播种
+会影响棉花出苗率 ，最终影响棉花产量 。 因此 ，准确有效鉴
+
+化学分析因其破坏性采样和技术要求高等因素 ，无法大规模
+
+检测 。高光谱成像技术 （hyperspectral imaging ，HSI）有着近
+似连续的光谱信息 、 探测识别能力极大提高 ，其在果蔬 、 谷
+物的品质检测 、成分分析等方面广泛应用 [３-４] 。 Feng 等 [５ ] 利
+用 HSI 成功寻求到一种鉴别不同加速老化时间下玉米籽粒
+活力的方法 ，不同老化时间下的鉴别准确率从 ６１％ 到 １００％
+
+不等 。在年份鉴别方面 ，Huang 等 [６ ] 基于 HSI 开展了不同年
+
+份玉米种子分类研究 ，使用最小二乘支持向量机方法得到了
+精度为 ９４. ４％ 的分类结果 。 研究表明 ， HSI 应用在分类检
+
+收稿日期 ：２０２０-１１-１４ ，修订日期 ：２０２１-０２-２６
+基金项目 ：国家自然科学基金项目（６１９６５０１４ ） ，兵团重大科技项目（２０１８A A００４０５ ） 资助
+作者简介 ：段
+
+龙 ，１９９８ 年生 ，石河子大学信息科学与技术学院硕士研究生
+
+* 通讯作者
+
+e-mail ：gp＿inf ＠ shzu. edu. cn ；lx shz ＠ １２６. co m
+
+e-mail ：duanlong ＠ stu. shzu. edu. cn
+
+光谱学与光谱分析
+
+３８５８
+
+测 、成分分析 、年份鉴别等方面是可行性 。
+HSI 具有波段多 、光谱分辨率高 、 信息量大 、 信息相关
+性强等特点 [７] ，因此 ，选取合适高效的数据分析处理方式对
+充分利用 HSI 尤为重要 。深度学习作为机器学习的一个新的
+研究方向 ， 具 有 特 征 学 习 、 特 征 提 取 和 海 量 数 据 处 理 能
+力[８ ] ，并且在光谱分析和高光谱图 像 处 理 领 域 有 所 应 用 ，
+Gao 等 [９ ] 将 HSI 与深度学习相结合 ，成功鉴别了沙枣的不同
+产地 ，鉴别精度达到 ９７. ７９％ ，Feng 等 [１０] 基于 HSI 和深度学
+习方法成功检测了冬枣中的细微损伤 ，不同产地的冬枣检测
+精度均在 ９０％ ～ １００％ 之间 。 研究表明 ，机器学习和深度学
+习方法可用于 HSI 处理 ，并实现种类鉴别 。
+本文旨在通过采集棉种的高光谱图像 ，并结合机器学习
+
+第 ４１ 卷
+
+和深度学习进行特征选择与特征提取 ，对不同年份棉种进行
+快速无损鉴别 ，为棉花精量播种过程中优质棉种选种技术提
+供理论依据和方法 。
+
+１
+
+实验部分
+
+１. １
+
+材料
+实验样品为新疆石河子市棉花研究所 ２０１６ 年 — ２０１９ 年
+四年的新陆早 ７１ 号棉种 。取 ４ 个年份棉种各 ３６０ 粒 ，共采集
+１ ４４０份无 破 损 、 外 观 无 明 显 差 异 的 棉 种 样 品 ， 样 品 如
+图１ 所示 。
+
+图 １ 样本信息
+Ｆｉｇ. １ Ｓａｍｐｌｅ ｉｎｆｏｒｍａｔｉｏｎ
+在图 １ 中 ，（a） — （d）四子图中分别为 ２０１９ 年 ，２０１８ 年
+２０１７ 年和 ２０１６ 年的样本 。 为了建立分类模型 ，将样本随机
+分成训 练 集 、 验 证 集 和 测 试 集 （３ ∶ １ ∶ １ ） 。 具 体 划 分 如
+表１ 所示 。
+表 １ 样本划分
+Ｔａｂｌｅ １ Ｓａｍｐｌｅ ｃｌａｓｓｉｆｉｃａｔｉｏｎ
+２０１６ 年
+棉种 ／粒
+
+２０１７ 年
+棉种 ／粒
+
+２０１８ 年
+棉种 ／粒
+
+２０１９ 年
+棉种 ／粒
+
+训练集
+
+２０８
+
+２０８
+
+２０８
+
+２０８
+
+验证集
+
+７７
+
+７７
+
+７７
+
+７７
+
+测试集
+
+７５
+
+７５
+
+７５
+
+７５
+
+１. ２ 仪器与高光谱数据采集
+采用近红外（near infrared ，NIR）高光谱成像系统拍摄了
+近四年不同年份的棉种表面 。 NIR 高光谱成像系统由四个模
+块组成 ，包括成像模块 、 照明模块 、 升降模块和软件模块 ，
+其具体信息如表 ２ 所示 。
+
+Ｔａｂｌｅ ２
+
+表 ２ 仪器信息
+Ｉｎｓｔｒｕｍｅｎｔ ｉｎｆｏｒｍａｔｉｏｎ
+
+模块
+
+设备信息
+
+成像模块
+
+Surface O ptics Co rporation （SOC ）７１０ SWIR 摄 像 机
+（Surface Optics Co rporation ， San Diego ， California ，
+U SA ）
+
+照明模块
+
+卤素灯 ，单盏 卤 素 灯 功 率 为 ５０ W ， 共 使 用 ４ 盏 卤
+素灯
+
+软件模块
+
+HyperScanner V ２ ，用于采集数据
+
+NIR 高光谱成像系统采集的图像尺寸为 ２８８ × ５１２ × ６４０
+（波段数 × 像素宽 × 像素长 ） ，在拍摄过程中将 ６０ 个同一年
+
+份的棉种样品放置在黑色面板上并调整 SOC 与样本的距离
+为 ７９ cm ，使成像模块能够捕捉到所有样本 。 HSI 采集后 ，根
+据式（１）将原始 HSI 进行校正 [１１] 。
+Io
+Ir ＝
+（１）
+２ Ig
+式（１）中 ， Ir 是校正后的值 ， Io 对 应 原 始图 像 ， Ig 是灰 色
+（５０％ 黑色和 ５０％ 白色组合）参考图像（使用 SOC 提供的灰色
+参考板拍摄） 。
+１. ３ 数据预处理
+考虑到拍摄过程中存在明显的电信号噪声 ，采用 SG 平
+滑滤波器对图像进行预处理（核大小为 ５ × ５ × ５ ，多项式阶数
+为 ３） ，以 减 少 随 机 噪 声 。 用 掩 模 法 逐 个 提 取 单 粒 棉 种 的
+HSI ，计算并平均反射光谱 。利用 SOC 获得的 １ １００ nm 波段
+的图像来计算掩模 ，统计含有单粒棉种的掩膜的坐标 。 根据
+坐标从 HSI 中提取含有单粒棉种的子图像 ，并提取出计算的
+平均光谱 。光谱提取过程如图 ２ 所示 。
+１. ４ 分类模型
+１. ４. １ 逻辑回归
+逻辑回归（logistic regression ，LR）在机器学习和统计领
+域是最经典的分类模型之一 ，可以获得良好的鉴别结果 [１２ ] 。
+对于 LR 模型 ，通过网格搜索算法选择合适的正则化参数 、
+损失函数优化算法和正则化系数 C 来优化模型 ，正则化参数
+选择 L２ ，损失函数优化算法和正则化系数 C 的调参范围分
+别为｛new ton-cg ，lbfgs ，liblinear ，sag｝和 １０ － ５ -５０ 。
+１. ４. ２ 偏最小二乘判别分析
+偏最小二乘法判 别分 析 （partial least squares discriminant analysis ，PLS-DA ） ，是多变量数据分析中常用的判别分
+析法 ，是最常用的分类模型之一 [１ ] 。 PLS-DA 具有模型参数
+少 、解释样本观测数目少和可以减少变量间多重共线性产生
+的影响等优势 。在本实验中 ，对于 PLS-DA 模型 ，通过网格搜
+
+第 １２ 期
+
+光谱学与光谱分析
+
+３８５９
+
+图 ２ 光谱提取过程
+Ｆｉｇ.２ Ｅｘｔｒａｃｔｉｏｎ ｐｒｏｃｅｓｓ ｏｆ ｓｐｅｃｔｒａ
+索算法选择合适的主成分数量来优化模型 ，主成分数量的调
+优范围为 ２ ～ ２０ 。
+１. ４. ３ 支持向量机
+支持向量机（support vector machine ，SVM ）是常用的分类
+模型 ，可用于定量和定性分析 [１３] ，其泛化能力强 ，通过最大
+化决策边界来获取稳定的分类结果 。在此 ，对 SVM 模型 ，通
+过网格搜索算法选择合适的核函数 、正则化系数 C 和核系数 γ
+来优化模型 ，核函数 、正则化系数 C 和核系数 γ 的调参范围分
+
+图３
+
+Ｆｉｇ. ３
+
+ＲＮＮ 结构图
+
+ＲＮＮ ｓｔｒｕｃｔｕｒｅ
+
+在图 ３ 中 ，第一部分为输入层和三个 RNN 层 ，输入层
+
+的特征数为 ２２０ ，RNN 层的隐藏层大小分别为 １１０ ，５５ ，２８ ，
+RNN 每一层包含层归一化以及激活函数 ，使用 LayerNorm
+
+进行层归一化 ，选取 tanh 为激活函数 ；第二部分由全连接层
+和输出层组成 ，输出的类别包含 ４ 类 。
+１. ４. ５ 长短记忆网络
+
+长短记忆网络（long short-term memory ，LST M ）是一种
+
+特殊的 RNN 结构 ，能够更好地解决长序列训练过程中的梯
+度消失和梯度爆炸问题 [１５ ] ，能够在处理更长的序列化数据
+
+中有更好的表现 。由于所采集的高光谱数据有大量波段 ，所
+
+以采用 LST M 在面对长序列光谱数据会有更好的分类效果 。
+设计包含两个部分的 LST M 结构 ，如图 ４ 所示 。
+
+别为｛poly ，rbf ，sigmoid｝ 、１０ － ５ -５０ 、１０ － ５ -５０ 。
+１. ４. ４ 循环神经网络
+循环神经网络 （recurrent neural network ，RNN ）常用于
+处理序列化数据 ，它能够有效获取序列变化数据的特征信
+息 [１４ ] 。实验所采集的光谱数据也为序列数据 ，RNN 可用作
+探索不同波段之间的关联关系 ，理论上会有良好的分类效果 。
+在此 ，设计包含两个部分的 RNN 结构 ，如图 ３ 所示 。
+
+在图 ４ 中 ，第一部分为输入层和三个 LST M 层 ，输入层
+
+的特征数为 ２２０ ，LST M 层的隐藏层特征数分别为 １１０ ，５５ ，
+２８ ，LST M 每 一 层 都 包 含 层 归 一 化 以 及 激 活 函 数 ， 使 用
+LayerNorm 进行层归一化 ，选取 tanh 为激活函数 ；第二部分
+
+由全连接层和输出层组成 ，输出的类别包含 ４ 类 。
+１. ４. ６ 卷积神经网络
+
+卷积神经网络 （convolutional neural networks ，CNN ）在
+
+特征选择与提取 、识别与分类等方面的表现优于浅层网络 ，
+具有两点优势 ：（１） 局部感知 ，即 CNN 仅对数据的局部元素
+
+进行感知 ，然后在更高层的网络将这些局部的信息进行融
+合 ，从而得到数据的全部表征信息 ；（２ ） 权值共享的网络结
+构使网络模型的复杂度降低 ，使权值的数量减少 。CNN 现已
+广泛应用于多个领域 [８-１０ ] ，但尚未发现被应用于棉种的高精
+度年份鉴别 。常见的 CNN 结构由以下六层组成 ：输入层 、卷
+
+３８６０
+
+光谱学与光谱分析
+
+积层 、激活层 、池化层 、全连接层和输出层 ，在本实验中 ，所
+构建的 CNN 结构如图 ５ 所示 。
+在图 ５ 中 ，CNN 结构包括输入层 、 输出层 、 全连接层 ，
+以及 ３ 个卷积层和 ３ 个池化层 ；每个卷积层与池化层之间包
+含层归一化和激活函数 ，使用 BatchNorm 进行层归一化 ，选
+
+第 ４１ 卷
+
+取 ReL U 为激活函数 ；其中输入层为训练集数据输入 ，共
+２２０ 个波段点 ，输出层为类别的预测值 ，共四类 。 卷积层的
+卷积核大小为 １ × ３ ，每个卷积层卷积核的个数分别为 １００ ，
+５０ 和 ２０ 。
+
+图 ４ ＬＳＴＭ 结构图
+Ｆｉｇ. ４ ＬＳＴＭ ｓｔｒｕｃｔｕｒｅ
+
+图 ５ ＣＮＮ 结构图
+Ｆｉｇ. ５ ＣＮＮ ｓｔｒｕｃｔｕｒｅ
+
+２ 结果与讨论
+２. １ 棉种的光谱曲线
+采集的近红外光谱在 ９１５ ～ １ ６９９ nm 范围内共 ２８８ 各波
+段 。在拍摄的过程中 ，由于机器的启动和结束 ，所获取的高
+光谱数据起止波段部分有较为明显的噪声 ，为了保证数据的
+可靠性 ，截去前后两端的波段 ，选取 １ ００２ ～ １ ６００ nm ，其光
+谱数据如图 ６ 所示 。
+在图 ６ 全光谱曲线图中可以看到棉种的光谱反射率曲线
+的变化趋势具有明显的相似性 ，在平均光谱曲线图中不同年
+份棉种的光谱虽然有少许差异 ，但这些差异并不足以用作棉
+种年份的高精度鉴别 。
+２. ２ 主成分分析
+主成分分析（p rincipal components analysis ，PCA ）是一
+
+图 ６ 棉种光谱
+Ｆｉｇ. ６ Ｓｐｅｃｔｒａ ｏｆ ｃｏｔｔｏｎ ｓｅｅｄｓ
+
+第 １２ 期
+
+光谱学与光谱分析
+
+种通过数据降维将多变量转化为几个能够描述数据信息的主
+成分的统计方法 。利用 PCA 对棉种的光谱数据进行分析 ，选
+取贡献率分别为 ９６. ８％ ，２. ７％ 和 ０. ２％ 的主成分 PC１ ，PC２
+和 PC３ ，贡献率累计达到 ９９. ７％ ，涵盖了绝大多数的数据信
+息 。 PC１ ，PC２ 和 PC３ 的三维得分图如图 ７ 所示 。
+
+３８６１
+
+经筛选 ，选取了 １ ００５ ，１ １２８ ，１ １５２ ，１ １９６ ，１ ２１２ ，
+１ ２６４ ，１ ３３２ ，１ ３６５ ，１ ３９５ ，１ ４１１ ，１ ４５５ ，１ ５０７ 和 １ ５３４ nm
+共 １３ 个特征波段 ，将特征波段（ ± １０ nm ）用作模型训练 。
+２. ４
+
+模型建立与结果分析
+
+建立了 六 种 分 类 模 型 ， 包 括 传 统 机 器 学 习 方 法 LR ，
+
+PLS-DA 和 SVM ，深度学习方法 RNN ，LST M 和 CNN 。 为
+
+了便于分类模型的建立 ，按照划分好的数据集将去除噪音的
+
+数据作为输入数据 ，所使用的 py thon 版本为 ３. ７. ０ ，使用
+scikit-learn０. ２. １ 构建 LR 、 PLS-DA 和 SVM 模型 ，使用 pytorch１. ５. ０ 构建 CNN 、 RNN 和 LST M 模型 ，模型的迭代次
+
+数设置为 ２００ 次 。 六种不同的分类模型的分类结果如表 ３
+所示 。
+
+Ｔａｂｌｅ ３
+
+表３
+
+不同模型鉴别结果
+
+Ｉｄｅｎｔｉｆｉｃａｔｉｏｎ ｒｅｓｕｌｔｓ ｏｆ ｄｉｆｆｅｒｅｎｔ ｍｏｄｅｌｓ
+全光谱
+
+图 ７ ＰＣＡ 得分散点图
+Ｆｉｇ. ７ Ｓｃｏｒｅｓ ｓｃａｔｔｅｒ ｐｌｏｔｓ ｏｆ ＰＣＡ
+图 ７ 是 PCA 的 ３ 维得分图 ，使用 PCA 方法降低了数据
+维度 ，但是图中大部分数据仍然交错在一起 ，加入 PCA 方法
+仍无法实现棉种年份的高精度鉴别 。 因此 ，需要对棉种光谱
+数据进一步的分析与处理 。
+２. ３ 特征波段选择
+基于全部光谱数据建立分类模型时 ，常常因数据量过大
+而造成数据冗余和数据的共线性 ，不利于有效提取光谱信
+息 ，影响模型的分类效果 。 为了减少数据计算量 ，降低模型
+复杂度 ，需要找到与棉种年份相关性较强的特征波段 。 在本
+实验中 ，采取了 PCA-loading 方法提取特征波段 。
+PCA-loading 法可以反映主成分与原始光谱波段之间的
+相关性 ，波段所对应的 loading 值越大 ，表明其对主成分的贡
+献率越大 [１６ ] 。首先明确不同主成分的贡献率 ，然后基于累积
+贡献率选取主成分 ，最后设定阈值 ，并以波段载荷图为依据
+筛选出波峰或波谷作为特征波段 ，选择特征波段的过程如图
+８ 所示 。
+
+训练集
+
+验证集
+
+特征光谱
+测试集
+
+训练集
+
+验证集
+
+测试集
+
+LR
+
+０. ９６７ ４ ０. ９７９ ０ ０. ９６２ ７ ０. ９３１ ３ ０. ９３０ １ ０. ９３５ ６
+
+SV M
+
+０. ９９６ ５ ０. ９８６ ０ ０. ９９３ ２ ０. ９８８ ４ ０. ９７９ ０ ０. ９８３ ０
+
+LS T M
+
+０. ９８０ ２ ０. ９６８ ５ ０. ９７６ ３ ０. ９６６ ２ ０. ９６５ ０ ０. ９４２ ４
+
+PLS-DA
+
+０. ９９０ ７ １. ０００ ０ ０. ９８９ ８ ０. ９８７ ２ ０. ９９３ ０ ０. ９７２ ９
+
+RN N
+
+０. ９６７ ４ ０. ９６１ ５ ０. ９６９ ５ ０. ９５６ ９ ０. ９５４ ５ ０. ９５２ ５
+
+CN N
+
+１. ０００ ０ １. ０００ ０ １. ０００ ０ １. ０００ ０ ０. ９８６ ０ ０. ９９６ ６
+
+在表 ３ 中 ，对于棉种的全光谱近红外光谱数据 ，六种模
+型均具有良好的性能 ，训练集 、 验证集和测试集的分类准确
+率均 超 过 ９６％ 。 SVM 和 CNN 模 型 的 结 果 接 近 ，均 超 过
+９９％ ，而 LR ，PLS-DA ，RNN 和 LST M 模型的结果相对较
+
+低 。 LR 模型采用 L２ 范式作为损失函数 ，模型参数 （C ，solver）经调优为 （４８. ７ ，lbfgs） ，其在训练集 、 验证集和测试集
+中的分类准确率超过 ９６％ 。在 PLS-DA 模型中 ，保留的主成
+
+分数为 ７ 个 ，其在训练集 、验证集和测试集中的分类准确率
+
+均超过 ９８％ 。对于 SVM 模型 ，最终模型参数 （kernel ，g amma ，C）经调优为（rbf ，３. ２ ，２０. ４） ，训练集 ，验证集和测试集
+的分类准确率均超过 ９８％ 。对于 RNN ，LST M 和 CNN 三个
+
+深度学习模型 ，CNN 的分类精度在划分的三个数据集中均
+达到 １００％ ，而 RNN 和 LST M 仅达到 ９６％ 。 由此可见 ，在
+处理全光谱数据时 ，CNN 相较于其他深度学习模型有更好
+的表现 ，PLS-DA 和 SVM 相较于 LR 有更好的表现 。
+
+对于棉种的特征光谱数据 ，六种模型的分类效果都有不
+
+同程度的降低 ，但仍具有较好的性能 。 SVM 和 CNN 模型的
+结果接近 ，测试集精度均超过 ９８％ ，相较于全光谱数据 ，精
+
+度降低 １％ 。 PLS-DA 模型精度降低 ２％ ，RNN 精度降低了
+１％ ，LST M 精度降低 ２％ ，但是仍保持在 ９４％ 以上 ，但是
+LR 模型的分类精度仅有 ９３％ ，精度降低 ４％ 。在特征光谱数
+
+据的训练中 ，LR 模型采用 L２ 范式作为损失函数 ，模型参数
+（C ，solver）经调优为 （４８. １ ，new ton-cg ） ；PLS-DA 模型经调
+图 ８ 特征光谱选取
+Ｆｉｇ. ８ Ｃｈａｒａｅｔｅｒｉｓｔｉｃ ｗａｖｅｌｅｎｇｔｈ ｓｅｌｅｃｔｉｏｎ
+
+优 ，保留 １５ 个主成分 ；对于 SVM 模型 ，最终模型参数（ker-
+
+nel ， g amma ， C）经 调优 为 （rbf ，２２. ０ ，２４. ４ ） 。 对 于 RNN ，
+LST M 和 CNN 三个深度学习模型 ，CNN 的分类精度最高 ，
+
+光谱学与光谱分析
+
+３８６２
+
+所降低 的 精 度 也 最 小 ， 而 RNN 和 LST M 仅 达 到 ９４％ 和
+９５％ 。由此可见 ，在处理特征光谱数据时 ，CNN 相较于其他
+深度学习模型有更好的表现 ，PLS-DA 和 SVM 优于 LR 。
+
+３ 结
+
+第 ４１ 卷
+
+的效果优于其他模型 ，深度学习分类模型优于传统机器学
+习 。由于选取特征光谱 ，丢失了部分数据信息 ，用特征光谱
+数据建模 ，分 类 效果 会有 不 同程 度的 降 低 ，其中 CNN 和
+SVM 两个分类模型仅降低 １％ ，测试集精度仍达到 ９８％ ，
+PLS-DA 在测试集上的分类精度达到 ９７％ ，其他三种模型的
+分类效果仅达到 ９４％ 左右 。因此 ，在采用近红外高光谱数据
+进行棉种年份鉴别时 ，CNN 和 SVM 相较于其他四种分类模
+型是更好的选择 。结合整体的研究结果 ，将高光谱成像技术
+与机器学习相结合可用于棉种年份精确鉴别 ，为完善棉花精
+量播种技术提供了理论依据与方法 。
+
+论
+
+结合机器学习和近红外高光谱成像技术 ，实现了棉种的
+年份精确鉴别 。采用 SG 方法进行光谱平滑 ，使用 PCA-loading 方法进行特征波段选取 ，使用六种分类模型 （LR ，PLSDA ，SVM ，RNN ，LST M 和 CNN ）分别对棉种的全谱和特征
+光谱数据进行建模分析 。结果表明 ，CNN 和 SVM 分类模型
+
+Ｒｅｆｅｒｅｎｃｅｓ
+[１ ]
+
+G A O Pan ，Z H A N G Chu ，L Ü Xin ，et al（高
+
+攀 ，张
+
+初 ，吕
+
+３８ （６） ：１７１２ ．
+[２ ]
+[３ ]
+[４ ]
+[５ ]
+[６ ]
+[７ ]
+[８ ]
+[９ ]
+[１０ ]
+[１１ ]
+[１２ ]
+[１３ ]
+[１４ ]
+[１５ ]
+[１６ ]
+
+新 ，等 ） ．Spect roscopy and Spectral A nalysis （光谱学与光谱分析 ） ，２０１８ ，
+
+F U Y uan-zhi ，C H A O M ao-ni ， H U Gen-hai ，et al（付远志 ，晁毛妮 ，胡根海 ，等 ） ．Seed（种子 ） ，２０１８ ，３７ （７ ） ：３１ ．
+
+JIA M in ，O U Zhong-hua（贾
+
+敏 ，欧中华 ） ．Acta Laser Biology Sinica （激光生物学报 ） ，２０１８ ，２７ （２ ） ：１１９ ．
+
+Zhang C ，Wang Q ，Liu F ，et al ．M easurement ，２０１７ ，９７ ：１４９ ．
+
+Feng L ，Zhu S ，Zhang C ，et al ．M olecules （Basel ，Switzerland ） ，２０１８ ，２３（１２ ） ：３０７８ ．
+
+H uang M ，T ang J ，Yang B ，et al ．Co mputers and Electronics in A g riculture ，２０１６ ，１２２ ：１３９ ．
+
+Gao F ，Wang Q ，Dong J ，et al ．Remo te Sensing ，２０１８ ，１０ （８ ） ：１２７１ ．
+
+Garcia-Gasulla D ，Ｐａｒéｓ Ｆ ，Vilalta A ，et al ．Journal of A rtificial Intelligence Research ，２０１８ ，６１ ：５６３ ．
+Gao P ，Xu W ，Yan T ，et al ．Foods ，２０１９ ，８ （１２ ） ：６２０ ．
+
+Feng L ，Zhu S ，Zhou L ，et al ．IEEE Access ，２０１９ ，７ ：６４４９４ ．
+
+Yan T ，Duan L ，Chen X ，et al ．RSC Advances ，２０２０ ，１０ ：４１９３６ ．
+
+Wu N ，Zhang C ，Bai X ，et al ．M olecules （Basel ，Switzerland ） ，２０１８ ，２３ （１１ ） ：２８３１ ．
+
+O kw uashi O ，N dehedehe C E ．Pattern Recog nition ，２０２０ ，１０３ ：１０７２９８ ．
+
+V enkatesan R ，Prabu S ．Journal of M edical Sy stems ，２０１９ ，４３ （７ ） ：２１６ ．
+Li Y ，Cao H ．Procedia Co mputer Science ，２０１８ ，１２９ ：２７７ ．
+
+Jiang H ，Jiang X ，Ru Y ，et al ．Inf rared Physics & T echnology ，２０２０ ，１１０ ：１０３４６７ ．
+
+Ｃｏｍｂｉｎｅ Ｈｙｐｅｒｓｐｅｃｔｒａｌ Ｉｍａｇｉｎｇ ａｎｄ Ｍａｃｈｉｎｅ Ｌｅａｒｎｉｎｇ ｔｏ Ｉｄｅｎｔｉｆｙ ｔｈｅ
+Ａｇｅ ｏｆ Ｃｏｔｔｏｎ Ｓｅｅｄｓ
+DU AN Long １ ，YAN Tian-y ing１ ，WANG Jiang-li２ ，３ ，YE Wei-xin１ ，CHEN Wei１ ，GAO Pan１ ，２ * ，L Ü Xin２ ，３ *
+１ ．College of Information Science and Technology ，Shihezi U niversity ，Shihezi ８３２００３ ，China
+２ ．T he Key Laboratory of Oasis Eco-Agriculture ，Xinjiang Production and Construction Corps ，Shihezi ８３２００３ ，China
+３ ．College of Agriculture ，Shihezi U niversity ，Shihezi ８３２００３ ，China
+Ａｂｓｔｒａｃｔ A t present ，the technology of precision cotton seeding has been promoted comprehensively in Xinjiang Corps ，w hich
+can accurately achieve the agronomic technical standards of one grain per hole ，but it also sets higher demands for the screening
+of high-quality cotton seeds ．To avoid the decrease of germination rate caused by the cotton seeds with lack of vitality in previous
+years ，machine learning and near-infrared （NIR） hyperspectral imaging （HSI） technology can be used to identify cotton seed
+years with high precision and to screen cotton seeds quickly and nondestructively ．A total of １ ４４０ cotton seeds with no difference
+in appearance were collected in ２０１６ ，２０１７ ，２０１８ ，and ２０１９ ，and ３６０ seeds per year （According to ３ ∶ １ ∶ １ ，it is divided into
+the training set ，validation set ，and test set ．） as samples ．Hyperspectral images of cotton seeds in the range of ９１５ ～ １ ６９８ nm
+were collected according to each batch of ６０ seeds ，and average spectra （１ ００２ ～ １ ６０２ nm ） for removing obvious noise at the
+beginning and the end were extracted as the raw data ．SavitzkyGolay （SG ） smoothing algorithm was used to preprocess the
+spectra ． T he principal component analysis loading （PCA-loading ） method was used to select １３ effective wavelengths ． Six
+
+第 １２ 期
+
+光谱学与光谱分析
+
+３８６３
+
+classification models ，including logistic regression （LR） ，partial least squares discriminant analysis （PLS-DA ） ，support vector
+machine （SVM ） ，recurrent neural network （RNN ） ， long-short memory network （LST M ） ， and convolution neural network
+（CNN ） ， were established based on full spectra and effective w avelengths ． When using full spectra to build models ， the
+identification accuracy of the six classification models on the test set was ９６. ２７％ ，９８. ９８％ ，９９. ３２％ ，９６. ９５％ ，９７. ６３％ ，and
+１００％ ，respectively ，among w hich CNN and SVM models had achieved good results ．When using effective wavelengths to build
+models ，the identification accuracy of the six classification models on the test set was ９３. ５６％ ，９７. ２９％ ，９８. ３０％ ，９５. ２５％ ，
+９４. ２４％ ，and ９９. ６６％ ，respectively ，among w hich CNN and SVM models still had excellent classification results ．T he results
+show ed that the six classification models could achieve high precision cotton seed years identification w hen the full spectra were
+used ，and the identification accuracy of CNN and SVM models was still up to ９８％ w hen the effective waveleng ths were used ．
+T he deep learning methods are generally better than the traditional machine learning methods ，but traditional machine learning
+methods can still maintain good identification accuracy ． T herefore ， the combination of near-infrared hyperspectral imaging
+technology and machine learning methods can achieve high-precision identification of cotton seed years ． It provides theories
+foundation and methods for selecting high-quality cotton seeds in the process of precision sowing ．
+Ｋｅｙｗｏｒｄｓ
+
+Hyperspectral imaging ；Cotton seed year-identification ；Convolution neural network ；M achine learning
+（Received Nov ．１４ ，２０２０ ；accepted Feb ．２６ ，２０２１）
+
+* Corresponding authors
+
+本 刊 声 明
+近期以来 ，一些不法分子假冒《光谱学与光谱分析》期刊社名义 ，以虚假网站等形式欺骗广大作者 、 读者 。 这些虚假网站
+公然假冒《光谱学与光谱分析》期刊名义进行大肆的征稿并骗取作者的审稿费和版面费 。 经部分作者及读者举报 ，现有关部门
+已就此介入调查 。我刊将通过法律途径向假冒者追究相应的责任 ，维护本刊权利 。
+本刊官方网站已正式开通 ，网址为
+http ：／／w w w ．gpxygpfx ．com ／
+在此郑重声明 ，本网址为 《光谱学与光谱分析》 期刊唯一开通运行的官方网站 。 本刊从未授权任何单位或个人以任何形
+式 （包括网上网下） 代理本刊征稿 、审稿等项业务 。
+希望广大读者和作者切实维护好自身的合法权益 ，防止受骗上当 。
+《光谱学与光谱分析》 期刊社
+２０１９ 年 ３ 月 １５ 日
+
+

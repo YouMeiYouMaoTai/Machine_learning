@@ -1,0 +1,2518 @@
+工程科学学报，第 44 卷，第 4 期：730−743，2022 年 4 月
+Chinese Journal of Engineering, Vol. 44, No. 4: 730−743, April 2022
+https://doi.org/10.13374/j.issn2095-9389.2021.06.22.001; http://cje.ustb.edu.cn
+
+基于机器学习的产品质量在线智能监控方法
+徐 钢1,2)，黎 敏1)，吕志民1)，徐金梧1) 苣
+1) 北京科技大学钢铁共性技术协同创新中心，北京 100083 2) 苏州宝联重工有限公司，苏州 215131
+
+苣 通信作者， E-mail: jwxu@ustb.edu.cn
+
+摘
+
+要
+
+为了提高产品质量的稳定性和可靠性，利用机器学习方法实现产品质量在线监控、在线优化和在线预设定，是钢铁
+
+企业目前亟待解决的关键技术. 针对企业需求，提出基于软超球体算法的产品质量异常在线识别和异常原因诊断方法、基于
+流形学习的工艺参数在线优化方法和基于多变量统计过程控制的工艺规范制定方法. 通过将上述方法进行系统集成，并利
+用工业互联网技术和大数据分析方法，研发了产品质量在线智能监控系统. 目前该系统已在钢铁企业十余条生产线上推广
+应用，质量在线判定的准确率达到 99.2%，在线检测时间不到 0.1 s.
+关键词
+
+大数据分析；机器学习；质量在线监控；质量在线优化；产品质量设计
+
+分类号
+
+TP274
+
+Online intelligent product quality monitoring method based on machine learning
+XU Gang1,2)，LI Min1)，LÜ Zhi-min1)，XU Jin-wu1) 苣
+1) Collaborative Innovation Center of Steel Technology, University of Science and Technology Beijing, Beijing 100083, China
+2) Suzhou Baolian Heavy Industry Co., Suzhou 215131, China
+
+苣 Corresponding author, E-mail: jwxu@ustb.edu.cn
+
+ABSTRACT
+
+In recent years, Chinese iron and steel enterprises have mainly adopted the “sampling after the event” method to inspect
+
+the product quality before it leaves the factory. Due to the inability to achieve quality inspection for all products, customers often claim
+and return defective products, leading to major economic losses in steel enterprises. To improve the stability and reliability of product
+quality, the use of machine learning methods to realize the online monitoring, optimization, and preset of product quality is the key
+technology to be solved in iron and steel enterprises. Therefore, the online identification and diagnosis of abnormal product quality based
+on the soft hypersphere, online optimization of the process parameters based on manifold learning and process specification formulation
+based on the multivariate statistical process control were proposed. In this study, integrated methods of online monitoring, diagnosis, and
+optimization of product quality were proposed in which the abnormal point of the product quality by the soft hypersphere method, based
+on the support vector data description, was identified online, and the process parameters were diagnosed through the contribution chart.
+Optimizing in real time, abnormal process parameters via a local projective transformation of neighbor points was then achieved. The
+process parameter setting model based on manifold learning by multiclass neighborhoods to extract the manifold of process parameters
+was established. Meanwhile, the process specification model, based on the maximum inner rectangle of the soft hypersphere, was
+established to obtain an effective control interval of the process parameters. Through system integration with the proposed methods and
+using industrial internet technology and big data analysis methods, the system of intelligent online monitoring of product quality has
+been successfully developed. At present, the system has been applied to more than ten production lines in iron and steel enterprises. The
+accuracy rate of online quality determination is 99.2%, and the online detection time is less than 0.1 s.
+收稿日期: 2021−06−22
+基金项目: 国家自然科学基金资助项目（51004013, 51204018）
+
+万方数据
+
+徐
+
+钢等： 基于机器学习的产品质量在线智能监控方法
+
+KEY WORDS
+
+· 731 ·
+
+big data analysis； machine learning； online monitoring of product quality； online optimization of quality； product
+
+quality design
+
+钢铁工业是典型的流程工业，产品在制造过
+
+识别和异常原因诊断方法、基于流形学习和邻近
+
+程中涉及多个连续衔接的工序. 目前，企业对产品
+
+点局部投影变换的工艺参数在线优化方法，并利用
+
+质量管控的主要手段是通过制定合理的工艺规
+
+机器学习方法制定质量设计和工艺规范，提高产
+
+范，并采用“事后”抽样检测方式来判定产品的品
+
+品质量的稳定性. 这些方法已应用于钢铁企业十
+
+质. 这种依赖于生产经验制订的工艺规范及“事
+
+余条工业生产线，证实了方法的有效性和准确性.
+
+后”抽检的方式容易出现批量的产品质量判废，或
+导致用户由于质量异议提出索赔和退货. 我国钢
+
+1
+
+质量在线智能监测与控制方法
+
+铁企业每年仅质量判废和质量异议所造成的经济
+
+实际工业生产中，需要确定不同工序的工艺
+
+损失近百亿元，如何利用机器学习方法实现产品
+
+参数控制范围，即制定不同产品的质量设计和工
+
+质量的在线监控、在线优化，制定科学的工艺规范
+
+艺规范. 当工艺参数（包括原料参数）在该范围内，
+
+和质量设计，是钢铁企业亟待解决的关键技术.
+随着“工业 4.0”时代的来临，制造技术正逐步
+从自动化、数字化、网络化向智能化方向发展. 以
+大数据分析、人工智能、信息物理系统、工业互联
+网为代表的新一代智能技术已成为企业向绿色
+化、智能化转型的重要途径 [1– 3]. 机器学习作为实
+现人工智能的重要途径，在人工智能领域的应用
+引起了广泛的兴趣，如何从海量的高维数据中提
+取出有价值的信息，并将信息转化为知识是目前
+机器学习的重要研究方向 [4–5].
+近年来，机器学习已在不同领域被广泛应用，
+在材料研发领域，通过高通量计算、高通量表征及
+高通量数据分析，实现了基于材料基因组的材料
+数字化研发 [6– 9] 和材料逆向设计 [10– 12]；在化工和高
+分子材料领域，通过机器学习方法对分子结构和
+材料实现精准设计 [13– 17]；在医药研发领域，采用多
+变量过程统计分析和机器学习方法，实现药物的
+快 速 研 发 和 质 量 控 制 [18– 20]； 在 机 器 视 觉 和 智 能 识
+别领域，主要通过深度学习实现人脸、语音、图
+像、字符等识别、自动驾驶和智能机器人.
+机器学习方法在工业领域也有广泛的应用前景，
+
+认为所设定的过程参数能满足产品质量要求，反
+之，则可能出现质量异常. 目前，钢铁企业在质量
+设计和工艺规范制定过程中，主要依赖于小批量
+工业试制和技术人员的生产经验制定对应的规
+范. 如何利用工业大数据分析和机器学习方法来
+确定产品质量可控区的范围是实现质量在线智能
+监控的重要手段.
+1.1 质量异常点识别方法
+多 变 量 统 计 过 程 控 制 (Multivariate statistical
+process control, MSPC) 考虑了各变量间的相关性，
+适用于多元强耦合变量的过程监控 [34– 36]. 经典的
+多变量统计过程控制方法，包括主成分分析
+（Principal component analysis，PCA) 统计控制图、偏
+最小二乘法 (Partial least squares, PLS) 统计控制图
+等. 但是，这类多变量统计控制图都有一个假设前
+提 ： 所 有 变 量 满 足 多 变 量 正 态 分 布 (Multivariate
+normality, MVN) 的条件. 在这个假设前提下，对于
+一个稳定的生产过程，正常样本点分布在高维空
+间中的某个超椭球体内；一旦样本点超出超椭球
+体的边界，则认为该生产过程出现了异常. 超椭球
+
+基于多变量的过程统计分析已用于生产过程控制
+
+的位置取决于各变量的均值大小和变量间的相关
+
+和 产 品 质 量 在 线 监 测 [21– 24]， 并 利 用 信 息 物 理 系 统
+
+性，而超椭球的大小则取决于变量的方差.
+
+和机器学习方法建立数字孪生模型，实现制造过
+
+质量异常点识别方法是根据所确定的超椭球
+
+程的无人化 [25–28]. 目前，这些方法大多应用于离散
+
+边界来判断设定的过程参数是否会造成产品质量
+
+制造业的智能制造，不仅提高生产效率且实现客
+
+异常 [37– 39]. 主要方法是通过实际生产数据来确定
+
+户个性化定制 [29– 31]. 但由于钢铁生产过程的数据
+
+过程参数可控区的边界，也称为单一类的分类问
+
+具有多元、强耦合、非线性的特征，因此在利用大
+
+题 . 假 设 给 定 一 个 数 据 集 S = {x1 , x2 , · · · , xn } ， 其 中
+
+数据分析和机器学习方法挖掘数据内在的信息和
+
+xi 为 p 维 的 数 据 向 量 ， n 为 样 本 个 数 ， 需 确 定 该 数
+
+知识，实现产品质量在线监控还存在一些困难
+
+[32–33]
+
+.
+
+据集的边界，即求解包含该数据集的最小封闭超
+
+针对钢铁企业在产品质量在线监控中存在的
+
+球体. 数据集中的每个样本点与超椭球体中心
+
+问题，提出基于软超球体算法的质量异常点在线
+
+万方数据
+
+C 的距离均应小于球体的半径 R，如图 1 所示.
+
+工程科学学报，第 44 卷，第 4 期
+
+· 732 ·
+Feature 2
+
+n
+∑
+f (x) = H [κ( x, x) − 2 αi κ(x, xi ) + D]
+
+R
+
+i=1
+
+C
+
+D=
+
+Feature 1
+
+n ∑
+n
+∑
+
+(
+
+)
+αi α j κ xi , x j − R2
+
+i=1 j=1
+
+
+
+n
+∑
+
+
+
+若 κ(x, x) − 2 αi κ(x, xi ) + D > 0, f (x) = 1
+图 1 最小封闭超球体示意图
+
+式中， H(x)表示 Heaviside 函数. 当 f (x) = 1，则该检
+
+Minimum hypersphere diagram
+
+Fig.1
+
+（5）
+
+i=1
+
+测点在超椭球的界外，被判为异常点.
+最小封闭超球体可以表述为如下优化问题
+
+但实际生产数据中，过程参数间往往存在多
+重耦合，变量间有着复杂的非线性特征，因此过程
+
+优化解：minR2 ;
+C,R
+
+参数间并不满足多变量正态分布的假设前提. 当
+
+约束条件：||xi − C||2 = (xi − C)T (xi − C) ⩽ R2 , i = 1, 2, · · · n
+（1）
+
+数据集中存在非线性、非正态分布时，这种线性形
+式的超椭球边界易造成误判，如图 2 所示.
+
+在约束条件中加入拉格朗日乘子 αi ⩾ 0，对应
+的拉格朗日函数为：
+L(C, R, α) = R2 +
+
+n
+∑
+
+Normal samples
+Abnormal samples
+
+αi [( xi − C)2 − R2 ]
+
+Feature 2
+
+（2）
+
+i=1
+
+Feature 1
+
+对上式求 C 和 R 偏导，且令导数值为 0，可求
+出超球体的优化解：
+L(C, R, α) = R2 +
+(xi − C) =
+2
+
+n
+n
+∑
+∑
+αi [( xi − C)2 − R2 ] =
+αi
+
+Fig.2
+
+i=1
+
+hypersphere
+
+图 2 线性超椭球将异常点判为正常点
+
+i=1
+
+n
+∑
+
+n ∑
+n
+∑
+αi κ(xi , xi ) −
+αi α j κ(xi , x j )
+
+i=1
+
+i=1 j=1
+
+式中，κ(xi , x j )表示变量的内积. 令ω (α) =
+
+n
+∑
+
+（3）
+
+Abnormal samples misjudged as normal samples in the linear
+
+近来年，基于核函数的非线性模式分析方法
+受到关注，核方法通过非线性核函数来表示数据
+
+αi κ(xi , xi )−
+
+内在的复杂结构特征，用于确定非线性软超球体
+
+n ∑
+n
+∑
+αi α j κ(xi , x j )，由式（3）可以求得最小超球体的
+
+的边界 [40– 41]. 非线性核函数将原始欧氏空间上的
+
+i=1
+
+数据集映射到高维特征空间中，通过映射点 ϕ(x)和
+
+i=1 j=1
+
+ϕ(z)的内积（对偶形式）求解非线性情况下的封闭
+
+半径 R 和球心 C：
+n
+∑
+R= ω (α),C= αi xi
+
+√
+
+超球体，如图 3 所示. 从图 3 中可以看出，原始空
+间的样本点（左图）分布在一个复杂的封闭体内，而
+
+（4）
+
+通过非线性核函数变換后，原先的样本点 x映射到
+
+i=1
+
+式中， αi是由式（3）求得的最优解.
+
+特征空间中的点 ϕ(x)分布在封闭的球体内（右图）.
+
+对待测的检测点 x ，可以由下式来判断该检测
+
+通过非线性核函数将原始空间中的样本点映
+射到特征空间后，可按照式（1）的方式，建立特征
+
+点是否正常.
+Samples border in original space
+
+Soft-hypersphere border in feature space
+
+Kernel
+function
+
+C
+
+R
+
+图 3 样本点从原始空间映射到特征空间
+Fig.3 Samples mapped from the original space into the feature space
+
+万方数据
+
+徐
+
+钢等： 基于机器学习的产品质量在线智能监控方法
+
+· 733 ·
+
+空间中封闭超球体的优化解.
+
+因此，一个待识别样本在线判别时仅需计算式
+
+优化解：min R + A||ξ||1 ;
+
+（9），并由式 (8) 来判定质量是否异常，计算时间仅
+
+2
+
+C,R,ξ
+
+约束条件：||ϕ (xi ) − C||2 = (ϕ( xi ) − C)T (ϕ (xi ) − C) ⩽ R2 +
+ξi ,ξi ⩾ 0, i = 1, 2, · · · n
+（6）
+
+式中，常数项 A 和松弛因子 ξ 的乘积项表示允许个
+别正常样本被判为异常的比例，比如，允许 2% 的
+正常样本被划分在超球体外，比例可根据用户对
+产品质量保证值的要求动态设定. 设定松弛项是
+为了更严格地控制产品质量的可靠性，比例的选
+择与第一类错误和第二类错误有关 [33]. 经非线性
+核函数映射后，拉格朗日函数为
+n
+n
+∑
+∑
+L(C, R, α, ξ) = R2 + A ξi +
+i=1
+
+i=1
+
+αi [||ϕ (xi ) − C|| − R − ξi ]−
+n
+∑n
+∑
+βi ξi =
+αi ⟨ϕ (xi ) − C, ϕ (xi ) − C⟩
+2
+
+i=1
+
+=
+
+n
+∑
+
+2
+
+n
+∑
+
+i=1
+
+αi α j κ(xi , x j )
+
+（7）
+
+i, j=1
+
+i=1
+q ∑
+q
+∑
+α∗i α∗j κ(x∗i , x∗j ) − R2 − γ
+
+式中， x 表示待测点， q为支持向量的个数， γ 表示松
+弛系数， x∗i 表示支持向量， α∗i 表示支持向量对应的
+权重系数. 实际上，在判别式（8）中，D 是学习样本
+在训练阶段求得的常量，并不需要在线计算，而
+κ(x, x) 根据核函数的定义也是一个常数. 与待检测
+点 x 有关的项只有
+q
+∑
+α∗i κ(x, x∗i )
+（9）
+
+万方数据
+
+偏离超球体时，应及时、准确地诊断出哪些工序、
+哪些工艺参数是造成偏差的原因，以便后续生产
+中调整工艺参数，避免出现批量的质量异常. 质量
+异常诊断模型的功能是，从设定的工艺参数中寻
+找引起偏离可控区边界各工艺参数的贡献值，贡
+献值大的工艺参数是偏离可控区的主要原因.
+待检测样本 x 到非线性超球体（软超球体，Soft
+hypersphere）球心的距离平方
+∑q
+R2 (x) = κ(x, x) − 2
+α∗ κ(x, x∗i )+
+i=1 i
+∑q ∑q
+α∗i α∗j κ(x∗j , x∗i )–γ
+j=1
+
+（10）
+
+边第二项. 若采用高斯核函数，则有
+∑q
+
+α∗ κ(x, x∗i )
+i=1 i
+
+=
+
+∑q
+
+α∗ e
+i=1 i
+
+−||x−x∗ ||2
+i
+2σ2
+
+（11）
+
+式中， σ为高斯核函数的系数项. 可知，若 x − x∗i 越
+大，则式 (11) 的值就越小，使得式 (10) 中的 R2 (x)值
+越大. 由此可知，式 (10) 中待测样本到球心的距离
+改变量主要取决于
+∑q
+∑q ∑ p
+α∗i ||x − x∗i ||2 =
+α∗i (x j − x∗i j )2 （12）
+i=1
+
+i=1
+
+j=1
+
+因而，待测样本 x 的第 j 变量对偏离的贡献值为
+( ) ∑q
+contr x j =
+（13）
+α∗i (x j − x∗i j )2
+i=1
+
+为了消除变量量纲对贡献值的影响，需对上
+式做标准化处理，标准化后变量 j 对偏离的贡献值
+( ) ∑q
+contr x j =
+（14）
+α∗i (x j − x∗i j )2 /Z j
+i=1
+
+式中， Z j为变量 j 的方差， contr(x j )中贡献值最大的
+那些变量是造成质量偏离的主要原因. 异常点识
+别和异常原因诊断方法的工业应用实例将在下面
+
+（8）
+
+i=1 j=1
+
+i=1
+
+在工业应用中，一旦发现设定的工艺参数已
+
+由式 (9) 可知，造成 R2 (x)变大的原因是上式右
+
+式（7）与式（3）不同之处在于，式（3）是采用线性函
+数，因而只能解决简单边界问题，即超椭球边界，
+而式（7）采用非线性核函数解决复杂非线性边界
+问题. 两者差别主要是选择线性函数还是非线性核
+函数，而求解的过程与上述所讨论的方法基本一致.
+在求解式（7）拉格朗日函数的优化解过程中，
+可以发现大部分 αi等于 0，只有少部分位于超球体
+边 界 的 样 本 αi大 于 0， 这 些 样 本 点 称 为 支 持 向 量
+（Support vector）. 因此，在异常点的识别时只需考
+虑少数支持向量对应的样本点 xi 和 αi，这样大大简
+化了异常点的识别过程，使得在线识别系统能够
+满足实时性要求. 式（8）给出了基于支持向量的非
+线性封闭超球体异常点检测方法
+q
+∑
+f (x) = H [κ( x, x) − 2 α∗i κ(x, x∗i ) + D]
+D=
+
+1.2 质量异常原因诊断方法
+
+i=1
+
+i=1
+
+αi κ(xi , xi ) −
+
+需几毫秒，完全满足质量在线监测的实时性要求.
+
+章节中讨论.
+1.3 工艺参数在线调整方法
+在确定导致质量异常原因后，需要对工艺参
+数进行在线调整，使生产过程回归到正常状态. 常
+用的多变量优化算法包括神经元网络、深度学
+习、粒子群算法. 这些算法大多采用正向推理方
+式，通过迭代找出优化解，但这会影响控制系统的
+实时性. 因此，在实际工业应用中，需要研究多变
+量、非线性情况下工艺参数的快速优化算法. 为
+了解决工艺参数在线动态优化问题，提出基于流
+
+工程科学学报，第 44 卷，第 4 期
+
+· 734 ·
+
+形学习的过程控制参数优化方法.
+
+Observed sample
+
+Manifold
+
+产品在制造过程中涉及多个连续衔接的工
+序，不同工序须严格控制工艺参数才能生产出合
+格的产品，如钢材在制造过程中涉及冶炼（控制成
+分、夹杂物）、连铸（控制铸坯组织）、成形（控制形
+
+{Si+1(Ui)}
+
+状、尺寸、组织）和热处理（主要组织和材料性能）
+等工序的质量指标控制. 工序间的质量指标存在
+
+{Si(Vi)}
+
+Ni
+
+遗传性和关联性，且与各工序设定的工艺参数密
+
+图 4 图４ 流形学习示意图
+
+切相关. 如何从高维、强耦合、非线性复杂数据
+
+Fig.4 Manifold learning diagram
+
+中，提取低维数据空间拓扑结构的机器学习方
+法—流形学习，近年来引起了广泛关注. 主流形学
+习可以理解为，从实际生产数据中提取出工艺参
+数随质量指标变化的流向“管道”，在“管道”内的
+工艺参数可以满足质量要求.
+流形是定义在一个拓扑空间上的某个子集，
+它建立在欧氏空间（原始空间）中，且与欧氏空间
+是微分同胚的. 如果数据集 Ｘ 中任意两个不同的
+样 本 点 a、 b， 都 存 在 a 邻 域 U 及 b 邻 域 V， 使 得
+V ∩ U = V ∪ U = Θ， 称 (Ｘ ,τ) 为 Hausdorff 拓 扑 空 间 .
+
+τ 表示 Ｘ 的子集所组成的一个非空集合，且满足：τ
+中元素的并集仍属于 τ，其有限交集及空集 Θ和 Ｘ 都
+属于 τ，并称 τ 为Ｘ的一个拓扑结构. 流形学习包括
+无监督和有监督数据的流形学习 [42– 45]. 无监督流
+形学习是解决高维数据的低维主流形提取方法，主
+要用高维数据的降维和消噪；有监督流形学习是根
+据标签数据变化规律，提取数据随标签值变化的低
+维主流形的结构，比如，工艺参数随质量指标的流向.
+给定高维的观测数据集X = {x1 , x2 , · · · x n}, xi ∈ RD
+为独立同分布随机样本，分布在光滑的 d 维流形
+上 ， 即 在 D 维 欧 氏 空 间 中 嵌 入 d 维 流 形 ， 其 中 d≤
+D. 流形学习就是从观测数据集 X 中寻找低维的嵌
+入映射，从而求得微分同胚的低维主流形. 在建立
+观测点 xi局部邻域的流形时，需要从数据集中抽取
+与该观测点邻近（或相似）的数据点构建邻近（相
+似）矩阵，并计算矩阵的特征向量，通过选择若干最
+大特征值对应的特征向量作为主向量，且将数据
+投影到主向量上得到低维的嵌入映射，即主流形.
+在实际工业应用中，高维数据中内在的低维主
+流形常常是未知的. 流形学习的目的是从数据集
+中，通过嵌入局部邻域的低维主流形来描述整体的
+流形结构，在不丢失数据内在的本质特征情况下，消
+除数据的次要因素和随机噪声，提取出数据低维的
+本质结构—主流形，图 4 给出流形学习的示意图.
+流形学习过程包括 3 个步骤：
+（1）首先，对样本集进行标准化处理，消除变
+
+万方数据
+
+量的不同量纲在计算几何距离时影响，并建立标
+签样本集 {( x1 , Si ), (x2 , Si ), · · · (xi , S j ) · · · (xn , S p )}，式中 S j
+表示标签样本的状态，即样本在流形空间中位置.
+（2）搜索距样本点 xi 邻近且与其处于同类状态
+的邻近点子集 {Si ( Vi )}，同时选择与 xi 相邻，但处于
+下一个状态的邻近点子集 {Si+1 ( Ui )} .
+（ 3） 对 所 有 n 个 样 本 点 建 立 邻 近 点 集 矩 阵
+{N1 , N2 , · · · , Nn }作 为 最 终 的 邻 近 矩 阵 ， 其 中 子 矩 阵
+Ni的 维 数 为 ki × D ， ki 为 观 测 点 xi 邻 近 点 个 数 ， D 为
+样本空间维度.
+对每个子矩阵 Ni求得协方差矩阵 Ci = NiT Ni ，再
+对协方差矩阵进行特征值分解，求得特征值 Ui 及
+对应的特征向量 λi
+Ci = UiT λi Ui
+
+（15）
+
+最大的特征值所对应的特征向量表示流形在
+xi 局部区域的主流形. 由于特征向量相互正交，主
+流形构成了局部区域的切空间. 主流形的提取实
+现了高维流形向低维主流形的转换，揭示了流形
+在局部区域的主要变化趋势（在图 4 中由箭头表
+示），并消除数据中的随机噪声和非主流的变化因
+素. 将邻域矩阵 Ni投影到局部区域的切空间 Ti
+b
+Ti = Ni U
+（16）
+b 为由式
+式中，向量 Ti 表示低维主流形演化方向， U
+
+（15）求得的 d 个最大特征值的特征向量.
+对每个观测点邻近矩阵分别计算特征向量，
+可以构建演化矩阵 T = [T1 , T2 , · · · , Tn ]. 演化矩阵的
+每个向量 Ti 表示流形在局部区域进行线性化处理
+后演化方向，因此演化矩阵 T 仍可描述非线性流形
+结构，这个方法也称为局部线性化.
+在实际工业应用中，除了需掌握流形变化趋
+势外，还应确定质量优化与调整过程中各工艺参
+数的调节量. 工艺参数的调节量
+∆B = Ti UiT
+
+（17）
+
+∆B 可以理解为当观测点偏离主流形时参数的偏移
+量. 由于向量 ∆B 是经过标准化处理，因此需要对
+
+徐
+
+钢等： 基于机器学习的产品质量在线智能监控方法
+
+· 735 ·
+
+每个变量进行反标准化计算.
+基于流形学习的过程控制参数优化方法的优
+势是，通过机器学习已提取出工艺参数与质量指
+标间对应的主流形，掌控工艺参数随质量指标的
+流向，因此在工艺参数调整时更具针对性和实时
+性. 基于流形学习的工艺参数在线调整方法的工
+业应用实例将在下面章节中讨论.
+
+的情况，软超球体会随相关系数的大小出现倾斜，
+
+工艺规范的设定方法
+由于工艺参数间存在多重耦合和非正态分布的
+数据结构，数据在高维空间中的分布通常是一个软
+超球体，如果凭借目前企业常用的基于参数独立同
+分布假设的 6σ方法，设定的工艺规范必将造成产品
+质量的偏差. 正确预设定工艺参数的方法应从软超
+球体中寻找最大内接矩形体（或平行体），最终根据
+最大内接矩形体来确定工艺参数的设定范围.
+产品制造过程涉及不同工序，每个工序需设
+定关键质量指标和工艺参数控制范围，才能确保
+最终产品的质量. 设工序 1 的关键工艺参数为
+A1、 A2 · · ·，工序 2 关键工艺参数为 B1、 B2 · · ·，最终
+工序的工艺参数为 C1、 C2 · · ·Cm，所有工序总计有
+p 维变量. 工艺参数的上、下限可以表示为
+
+根据集合理论，寻求软超球体中最大的内接
+
+最大内接矩形体同样也会倾斜（请参看图 9）. 因
+此，当两个工艺参数间存在强耦合时，原则上选择
+其中一项关键工艺参数的边界来确定关键变量
+上、下限，另一项关键工艺参数用来修正由前一项
+工艺参数确定的范围是否合理.
+（3）组合优化问题.
+
+1.4
+
+1
+1
+A1[Xlow
+, Xup
+],
+......
+i
+i
+B1[Xlow
+, Xup
+],
+......
+p
+p
+Cm[Xlow , Xup ].
+
+矩形体是一个最大集合和最小集合的组合优化问
+题. 通过将软超球体投影到二维平面上寻求最大
+的内接矩形，并将所有从二维投影所求得的内接
+矩形边界来获得所有变量的最小集合（并集），即
+软超球体的最大内接矩形体. 因此，对于复杂边界
+的软超球体，组合优化过程需在全域寻求优化解.
+（4）工艺规范验证.
+数据的可靠性和完备性对分析结果有着重大
+影响，应验证数据的可靠性，确保数据准确、可靠；
+此外，还需验证数据的完备性，应考虑训练数据是
+否涵盖了所有区域，尤其是收集出现质量异常的
+区域. 通常包含一定数量异常点的训练数据集更
+有利于准确地划分软超球体的边界.
+
+2
+（18）
+
+i 和
+为了满足各工序工艺参数所设定的上限 Xup
+i 分布在软超球体内，且满足多变量耦合情
+下限 Xlow
+
+况下复杂边界的要求，设定的上、下限应限定在软
+超球体中最大内接矩形体 F 内
+F = (A1 ∩ A2 ∩ · · · ) ∪ (B1 ∩ B2 ∩ · · · ) ∪ (C1 ∩ C2 · · · ∩ Cm) ;
+A1、A2 · · · B1、B2 · · · C1、C2 · · · Cm ∈ F F ∈ R p
+（19）
+
+工业应用实例
+钢铁企业需根据客户要求，在生产过程对各
+
+工序的工艺参数在线智能监控，确保产品的最终
+质量. 下面以汽车用钢为例，讨论运用机器学习方
+法在产品质量在线监控、在线优化和在线预设定
+中的工业应用实例.
+深冲钢（IF 钢）是汽车构件的重要原材料，在
+成形与使用中需考虑其冲压性能、力学强度、抗
+冲击性能等质量要求，主要性能指标包括：抗拉强
+
+式 （ 19） 可 以 解 释 为 ， 寻 求 每 个 工 艺 参 数 在 软
+
+度、屈服强度、延伸率、塑性应变比等. 深冲钢生
+
+超球体内最大区间，同时需满足其他工艺参数的
+
+产过程中涉及炼钢、热轧和热处理等工序，不同工
+
+区间范围，即寻求最大的并集，具体应用实例将在
+
+序需严格控制相应的工艺参数才能制造出客户要
+
+下章节中讨论.
+
+求的质量指标. 炼钢工序应控制冶炼过程中钢材
+
+在实际工业应用中，请注意下面几个问题：
+
+中主要成分：C、Mn、P、S 等元素的质量分数；热
+
+（1）关键变量的选择.
+流程工业在产品制造过程中涉及多个连续相
+关的工序，工艺参数较多，应将那些与产品质量密
+切相关的质量指标和工艺参数作为关键变量. 在
+遴选过程中，可以通过互相关分析来判定工艺参
+数与产品质量的关联度，并选择相关系数绝对值
+大的工艺参数作为工艺规范需优化的关键变量.
+
+轧工序：加热炉出口温度、精轧入口温度、精轧出口
+温度、卷取温度等；热处理工序：均热平均温度、
+快冷出口温度、时效出口温度、缓冷出口温度等.
+从实际生产线上采集不同牌号深冲钢的工艺
+参数和质量指标值. 原始数据集中有 24 个工艺参
+数 ， 其 中 12 个 工 艺 参 数 与 产 品 的 几 何 尺 寸 有 关 ，
+而与材料性能无直接关系，因此选择 12 个相关的
+
+（2）相关变量的选择.
+
+参数作为数据学习的样本集，主要成分和工艺参
+
+实际工业生产中，工艺参数间常出现强耦合
+
+数名称及统计量如表 1 所示.
+
+万方数据
+
+工程科学学报，第 44 卷，第 4 期
+
+· 736 ·
+表 1 关键工艺参数、质量指标及统计量
+Table 1 Key process parameters, quality indexes, and statistics
+Parameters
+
+Process parameters
+
+Mass fraction of C / %
+
+0.0027
+
+0.0011
+
+0.0017
+
+Mass fraction of Mn / %
+
+0.160
+
+0.100
+
+0.126
+
+No.3
+
+Mass fraction of P / %
+
+0.014
+
+0.007
+
+0.010
+
+No.4
+
+Mass fraction of S / %
+
+0.0139
+
+0.0024
+
+0.0077
+
+No.5
+
+Exit temperature of heating furnace / °C
+
+1277.3
+
+1247.1
+
+1263.04
+
+No.6
+
+Entry temperature of finish rolling / °C
+
+1083.9
+
+1014.0
+
+1039.08
+
+No.7
+
+Exit temperature of finish rolling / °C
+
+928.5
+
+898.7
+
+917.17
+
+No.8
+
+Coiling temperature / °C
+
+755.4
+
+654.5
+
+711.70
+
+No.9
+
+Soaking temperature / °C
+
+854.9
+
+789.7
+
+824.27
+
+No.10
+
+Fast-cooling exit temperature / °C
+
+455.7
+
+378.8
+
+431.13
+
+No.11
+
+Aging exit temperature / °C
+
+394.1
+
+345.1
+
+374.52
+
+No.12
+
+Slow-cooling exit temperature / °C
+
+676.4
+
+606.0
+
+641.61
+
+No.1
+
+Tensile strength / MPa
+
+308.0
+
+276.0
+
+290.1
+
+No.2
+
+Yield strength / MPa
+
+125.0
+
+160.0
+
+139.4
+
+No.3
+
+Elongation / %
+
+40.5
+
+50.5
+
+45.1
+
+No.4
+
+Plastic strain ratio
+
+2.10
+
+3.5
+
+2.85
+
+46
+58
+
+28
+
+Control limit
+
+0.8
+
+0.7
+
+0.7
+
+0.6
+
+0.6
+
+0.5
+
+0.5
+
+0.4
+
+0.4
+
+0.3
+
+0.3
+
+0.2
+
+0
+
+20
+
+40
+
+(b)
+
+0.9
+
+R2
+
+R2
+
+0.8
+
+Mean
+
+No.2
+
+1.0
+
+(a)
+
+0.9
+
+Min
+
+No.1
+
+Quality indexes
+
+1.0
+
+Max
+
+60
+80 100 120
+Number of samples
+
+140
+
+160
+
+0.2
+
+25
+
+0
+
+20
+
+57 Control limit
+
+40
+60
+80
+Number of samples
+
+100
+
+120
+
+图 5 训练集的控制限 R2(a) 和在线监测结果 (b)
+Fig.5 Control limit R2 (a) of the training set and online monitoring result (b)
+
+质量在线监测与诊断
+从采集的数据集中随机选取 160 个样本作为
+训练样本，并设松弛系数 γ = 0.02，由式（4）确定的
+软 超 球 体 R2值 作 为 控 制 限 ， 训 练 结 果 如 图 5(a) 所
+示. 从图中可以看到，绝大部分样本均在控制限以
+下，这些样本都在软超球体的内部（正常样本），但
+有 3 个样本在控制限的边界或超出控制限，可能
+存在质量异常的情况. 查看原始数据后发现，除
+第 46 样本的质量指标略超出标准外，第 28、58 样
+本处在正常范围，但接近临界值. 出现这种情况的
+原因是，在训练阶段设定松弛系数 γ = 0.02，即允许
+个别正常样本被判为异常（在软超球体边界外）.
+松弛系数会影响软超球体 R2值，因此对质量要求
+高的产品，为了严格监控生产过程可以适度降低
+控制限 R2值.
+2.1
+
+万方数据
+
+经过训练后的软超球体模型中，有 36 个支持
+向量，这些支持向量及对应的权重系数通过式（8）
+对产品质量进行在线监测. 从生产线上另采集
+120 个样本数据来验证方法的有效性，在线监测结
+果如图 5(b) 所示. 从图 5(b) 中可以发现，第 25 号
+样本点已超出了控制限，说明工艺参数出现异常；
+第 57 号样本点临近控制限，也可能出现异常. 为
+了查找异常的原因，利用式（14）计算样本点工艺
+参 数 的 贡 献 值 （ 图 6(a) 和 6(b)） ， 发 现 碳 质 量 分 数
+（表 1 中序号 1）和热轧加热炉出口温度（表 1 中序
+号 5） 贡 献 值 最 大 . 通 过 在 线 监 控 系 统 的 数 据 显
+示，25 号样本点的碳质量分数为 0.0029%，已超出
+了 0.0027% 最大值，加热炉出口温度为 1249 °C，接
+近 最 小 值 1247 °C； 57 号 样 本 点 的 碳 质 量 分 数 为
+0.0027%，加热炉出口温度为 1247 °C，均为临界值，
+
+钢等： 基于机器学习的产品质量在线智能监控方法
+
+Contribution values
+
+3.0
+
+· 737 ·
+3.0
+
+(a)
+
+2.5
+
+Contribution values
+
+徐
+
+2.0
+1.5
+1.0
+0.5
+0
+
+1
+
+2
+
+3
+
+2.0
+1.5
+1.0
+0.5
+0
+
+4 5 6 7 8 9 10 11 12
+Seriel number of parameters
+
+(b)
+
+2.5
+
+1
+
+2
+
+3
+
+4 5 6 7 8 9 10 11 12
+Seriel number of parameters
+
+图 6 工艺参数 (参数序号在表 1 中) 的贡献图.(a) 第 25 样本;(b) 第 57 样本
+Fig.6
+
+Contribution chart of parameters: (a) sample No. 25; (b) sample No. 57 (serial numbers of the parameters are listed in Table 1)
+
+2.2 质量设计与在线优化
+为了分析各工序中主要工艺参数随质量指标
+的变化趋势，从 IF 钢不同等级的主要工艺参数和
+质量指标数据中分析主流形的形态. 钢的屈服强
+度 是 衡 量 IF 钢 性 能 的 重 要 质 量 指 标 ， 所 采 集 的
+IF 钢的屈服强度范围分布在 155～130 MPa 之间.
+为 了 便 于 分 析 ， 将 样 本 集 的 屈 服 強 度 按 5 MPa 作
+为一个级差，分成 5 个等级. 按照式（16）给出的主
+流形学习方法，分别从相邻等级中寻找邻近点，邻
+近点个数设定为 20，计算各工艺参数局部低维主
+流形的演化方向. 为了便于讨论，仅给出与屈服强
+度密切相关的碳、锰成分、热轧精轧入口温度、热处
+理均热出口温度的主流形演化规律，如图 7 所示.
+0.17
+Mass fraction of Mn/%
+
+2.4 (a)
+2.2
+2.0
+1.8
+1.6
+1.4
+1.2
+130
+
+Entry temperature of finish rolling/℃
+
+捷、准确地诊断出现异常原因.
+
+1275
+
+135
+
+140
+145
+Yield strength/MPa
+
+150
+
+155
+
+1270
+1265
+1260
+1255
+135
+
+140
+145
+Yield strength/MPa
+
+150
+
+155
+
+(b)
+
+0.15
+0.14
+0.13
+0.12
+0.11
+
+860
+
+(c)
+
+1250
+130
+
+0.16
+
+0.10
+130
+
+Soaking exit temperature/℃
+
+Mass fraction of C/(10−3 %)
+
+其他工艺参数均在控制限范围. 查看样本点的质
+量 指 标 后 ， 发 现 第 25 样 本 点 的 抗 拉 强 度 仅 为
+275 MPa， 已 低 于 表 1 中 给 出 的 276 MPa 最 小 值 ；
+第 57 样 本 点 的 屈 服 强 度 为 160 MPa， 是 表 1 中 给
+出的最大值.
+由于工艺参数与质量指标间有着密切的关
+联，因此可以通过工艺参数的在线监测和诊断实
+现产品质量在线监控. 利用机器学习提取数据中
+内在的信息和知识，本质上是建立实体对象（工艺
+装备和产品）与数字对象（工艺参数和产品质量）
+之间的数字孪生模型，并通过孪生模型来预测在
+设定的工艺参数条件下实体对象的行为. 通过上
+述工业应用案例分析，证实采用软超球体方法所
+确定的控制限能有效地实现质量在线监控，并快
+
+135
+
+140
+145
+Yield strength/MPa
+
+150
+
+155
+
+135
+
+140
+145
+Yield strength/MPa
+
+150
+
+155
+
+(d)
+
+850
+840
+830
+820
+810
+800
+130
+
+图 7 工艺参数与屈服强度的主流形. (a) 碳含量流形;(b) 锰含量流形;(c) 精轧入口温度流形;(d) 均热温度流形
+Fig.7
+
+Main manifold between the process parameters and yield strength: (a) manifold of C; (b) manifold of Mn; (c) manifold of the entry temperature of
+
+finish rolling; (d) manifold of the soaking temperature
+
+万方数据
+
+工程科学学报，第 44 卷，第 4 期
+
+· 738 ·
+
+从图中可以看出，主流形分布在“管道（虚线
+
+关键工序，工艺参数的设定将决定材料最终的性
+
+部分）”内，其中碳（图 7(a)）和锰成分（图 7(b)）在屈
+
+能，其主要工艺参数包括：均热平均温度、快冷出
+
+服强度为 130 MPa（DC06 系列）的产品中质量分数
+
+口温度、时效出口温度、缓冷出口温度等. 工艺参
+
+较低，而屈服强度为 155 MPa（DC04 系列）材料的
+
+数间的相关系数已在表 4 中给出，有 4 对变量的相
+
+质量分数较高；热轧精轧入口温度（图 7(c)）、热处
+
+关系数小于 0.5，因而只讨论这 4 种情况下软超球
+
+理均热出口温度 (图 7(d)) 对于屈服强度为 130 MPa
+
+体在二维投影中的上、下限. 图 8 给出了热处理工
+
+的 材 料 来 说 较 高 ， 而 对 于 屈 服 强 度 为 155 MPa 的
+
+序中，这 4 对变量的上、下限.
+
+材料呈下降趋势.
+
+在图 8(a) 中，最大内接矩形的上、下限：均热
+
+由式（16）确定的关键工艺参数的主流形管道
+
+温 度 840～ 814 °C， 快 冷 温 度 456～ 396 °C； 图 8(b)
+
+还可用来制定按用户个性化需求的质量设计，表 2
+
+中，均热温度 840～807 °C，时效温度 392～356 °C；
+
+给出了不同屈服强度的工艺参数范围. 由于质量
+
+图 8(c) 中 ， 均 热 温 度 839～ 809 °C， 缓 冷 温 度
+
+指标中，抗拉强度、延伸率、塑性应变比等指标在
+
+662～618 °C；图 8(d) 中，时效温度 392～357 °C，缓
+
+实际工业生产中基本上能满足产品质量要求，而
+
+冷温度 662～620 °C. 根据式（17）的要求，寻求所
+
+屈服强度关系到 IF 钢的成形性能，且在生产过程
+
+有变量的最小集合（并集），热处理工序的工艺参
+
+中较难精准控制，因此表 2 中仅给出针对屈服强
+
+数 的 上 、 下 限 ： 均 热 温 度 839～ 814 °C、 快 冷 温 度
+
+度的质量设计. 其他质量指标同样可以按用户要
+
+456～ 396 °C、 时 效 温 度 392～ 357 °C、 缓 冷 温 度
+
+求制定相应的工艺参数范围，并与按屈服强度制
+
+662～620 °C.
+
+定的工艺参数进行优化组合，最终确定工艺参数
+值以满足用户个性化定制.
+
+由于时效温度和快冷温度存在强耦合（相关
+系数为 0.72），因而需讨论强耦合情况下关联工艺
+
+另外，局部主流形演化算法还可用于产品质
+
+参数的边界问题. 软超球体在时效温度、快冷温
+
+量在线优化，如果前工序的工艺参数出现偏差时，
+
+度二维变量上的投影如图 9 所示，从图上可发现
+
+需要在后续工序中对工艺参数作动态调整，纠正
+
+二维投影是一个倾斜的复杂边界（倾角为相关系
+
+前工序造成的质量偏差. 以前面讨论的第 25 号样
+
+数的正切函数），这时最大内接矩形变成了平行四
+
+本点为例，该点的碳质量分数为 0.0029%，Mn 的质
+
+边形，上、下限需从 A、B 两点的边界来确定. 平
+
+量分数为 0.13%，P 为 0.009%，S 为 0.012%，C 含量
+
+行 体 的 边 界 ： 时 效 温 度 396～ 347 °C、 快 冷 温 度
+
+已超出了工艺规范要求的最大值，因此，需要在轧
+
+451～398 °C；而由最大内接矩形确定的上、下限：
+
+钢和热处理工序对温度参数作适应的调整. 从数
+
+时效温度 392～357 °C、快冷温度 456～396 °C，求
+
+据集中搜索与这 4 个成分参数邻近的 20 个历史样
+
+两个集合的并集，最终的上、下限：时效温度
+
+本点，组成邻近矩阵 N. 由式 (15) 求出协方差矩阵
+
+392～357 °C、快冷温度 451～398 °C.
+
+的特征矢量，并从中选择前 5 个最大特征值所对
+
+参照同样的方法，确定其他工序的工艺参数
+
+应的特征矢量组成的局部低维主流形的演化方向
+
+的上、下限，表 5 给出各工序工艺参数的设定范
+
+矩阵 T. 由式 (16) 和式 (17) 求出主流形矢量以及
+
+围. 为了对比不同方法所确定的上、下限差异，表 5
+
+后续工序的工艺参数的调整量. 表 3 给出了实际
+
+中还给出了由最大最小值和 6σ 方法确定的上、下
+
+调整量以及调整后的工艺参数. 对后续工序的工
+
+限. 可以看出，采用软超球体边界所确定工艺参数
+
+艺参数作了调整后，发现材料性能有了明显的改
+
+的上、下限区域比其他方法所确定的上、下限区
+
+善，塑性应变比由原来的 2.3 提高到 2.9，屈服强度
+
+域要严格，且更加合理和精准.
+
+从 160 MPa 调整到 140 MPa. 通过这个工业应用实
+例，证实了局部主流形算法能有效地实现产品质
+量在线优化.
+2.3
+
+工艺规范的预设定
+
+3
+
+讨论和建议
+在实际工业应用中，下面几个问题需进一步
+
+讨论：
+
+下面以 IF 大类钢种为例，讨论如何通过寻求
+
+（ 1） 由 于 流 程 工 业 的 过 程 控 制 参 数 之 间 往 往
+
+软超球体中最大的内接矩形体的方法来制定 IF 钢
+
+存在多重耦合，数据集中不可避免地存在非线性
+
+各工序的工艺规范. 首先，需对获取的数据进行清
+
+问题. 在确定超软球体的边界时，通常采用高斯非
+
+洗，清洗的目的是剔除数据中的异常点和强耦合
+
+线性核函数，还可以采用其他非线性核函数. 当选
+
+的过程变量. 热处理序是 IF 钢制造过程最后一道
+
+用高斯核函数时，核参数 σ 的选择非常重要，取值
+
+万方数据
+
+万方数据
+
+0.0016–0.002
+
+0.0016–0.0021 0.155–0.170 0.008–0.012 0.006–0.0095
+
+150 MPa
+
+160 MPa
+
+Exit temperature of heating
+furnace / °C
+
+1247.5
+
+11.2
+
+1258.7
+
+Original value
+
+Adjustment
+
+Real value
+
+1043.2
+
+6.3
+
+1036.9
+
+Entry temperature of finish
+rolling / °C
+
+1040–1050
+
+1040–1050
+
+1030–1040
+
+1030–1040
+
+914–920
+
+914–920
+
+914–920
+
+914–920
+
+表 3 第 25 号样本点的工艺参数调整值
+
+1256–1264
+
+1257–1265
+
+1259–1266
+
+1261–1267
+
+920.5
+
+3.3
+
+917.2
+
+Exit temperature of finish
+rolling / °C
+
+704
+
+−36.0
+
+740
+
+Coiling
+temperature / °C
+
+827.7
+
+−12.4
+
+840.1
+
+Soaking
+temperature / °C
+
+806–826
+
+810–827
+
+817–835
+
+827–843
+
+438.8
+
+−6.3
+
+445.1
+
+Fast-cooling exit
+temperature / °C
+
+650–660
+
+650–660
+
+725–740
+
+725–740
+
+Table 3 Adjustment of process parameters for sample No. 25
+
+0.135–0.155 0.008–0.012 0.006–0.0095
+
+0.0016–0.0019 0.125–0.135 0.008–0.012 0.006–0.0095
+
+140 MPa
+
+Process
+parameter
+
+Yield
+strength
+
+0.0015–0.00185 0.105–0.125 0.008–0.012 0.006–0.0095
+
+130 MPa
+
+Process parameter
+
+360–375
+
+365–380
+
+370–385
+
+375–390
+
+384.1
+
+−5.3
+
+389.4
+
+640–660
+
+635–655
+
+630–650
+
+625–645
+
+Slow-cooling exit
+temperature /
+°C
+
+644.6
+
+−19.7
+
+664.3
+
+Slow-cooling exit
+temperature / °C
+
+Aging exit
+temperature /
+°C
+
+Aging exit
+temperature / °C
+
+420–450
+
+420–450
+
+420–450
+
+420–450
+
+Exit temperature
+Entry
+Exit temperature
+Coiling
+Soaking
+Fast-cooling exit
+Mass fraction Mass fraction Mass fraction Mass fraction
+of heating
+temperature of
+of finish rolling / temperature / temperature / temperature /
+of C / %
+of Mn / %
+of P / %
+of S / %
+furnace /
+finish rolling /
+°C
+°C
+°C
+°C
+°C
+°C
+
+Table 2 Quality design of the yield strength
+
+表 2 屈服强度的质量设计
+
+徐
+钢等： 基于机器学习的产品质量在线智能监控方法
+· 739 ·
+
+工程科学学报，第 44 卷，第 4 期
+
+· 740 ·
+表 4 热处理工艺参数的相关系数
+
+Table 4 Correlation coefficient of the process parameters in the heat treatment
+Soaking temperature
+
+Fast-cooling temperature
+
+Aging temperature
+
+Slow-cooling temperature
+
+Soaking temperature
+
+1.0
+
+0.12
+
+0.10
+
+0.10
+
+Fast-cooling temperature
+
+—
+
+1.0
+
+0.72
+
+0.61
+
+Aging temperature
+
+—
+
+—
+
+1.0
+
+0.43
+
+Slow-cooling temperature
+
+—
+
+—
+
+—
+
+1.0
+
+480
+
+(a)
+Aging exit temperature/℃
+
+Fast-cooling temperature/℃
+
+Correlation coefficient
+
+460
+440
+420
+400
+380
+360
+780
+
+(c)
+
+660
+640
+620
+600
+790
+
+图8
+Fig.8
+
+800
+
+810
+820
+830
+Soaking temperature/℃
+
+390
+380
+370
+360
+350
+340
+
+860
+
+800
+820
+840
+Soaking temperature/℃
+
+790
+
+Slow-cooling temperature/℃
+
+Slow-cooling temperature/℃
+
+680
+
+400 (b)
+
+840
+
+850
+
+680
+
+800
+
+810 820 830 840
+Soaking temperature/℃
+
+850
+
+860
+
+400
+
+410
+
+(d)
+
+660
+640
+620
+600
+330
+
+340
+
+350 360 370 380 390
+Aging exit temperature/℃
+
+热处理工序的工艺参数上、下限.(a) 均热温度与快冷温度;(b) 均热温设与时效温度;(c) 均热温度与缓冷温度;(d) 时效温度与缓冷温度
+
+Up and low limits of the process parameters in the heat treatment: (a) soaking and fast-cooling temperature; (b) soaking and aging temperature; (c)
+
+Fast-cooling temperature/℃
+
+soaking and slow-cooling temperature; (d) aging and slow-cooling temperature
+
+将更加突出，但容易造成软超球体边界过拟合，不
+
+460
+
+B
+
+440
+
+性，同时会影响软超球体最大内接矩形体的确定.
+
+420
+
+图 10 给出了 σ 取不同值时，二维软超球体的边界，
+
+400
+
+340
+图9
+
+Fig.9
+
+当 σ=70，超球体边界实际上是椭圆，覆盖的区域较
+
+A
+
+大，但易发生第二类错误，即将异常样本判为正常
+
+380
+360
+
+仅增加支持向量个数，影响在线监测系统的实时
+
+360
+380
+400
+Aging exit temperature/℃
+时效温度与快冷温度的上、下限
+
+Up and low limits of the aging temperature and fast-cooling
+
+样本；当 σ=25，超球体边界是个紧凑的封闭区域，
+绝大多数正常样本点分布在封闭区域内，且准确
+的划分了正常样本与异常样本的边界.
+（2）基于软超球体的工艺规范制定与基于主流
+
+temperature
+
+形的质量设计都是围绕如何设定工艺参数范围，
+
+过大或过小都可能造成软超球体边界的改变并导
+
+从表 2 和表 5 中可以发现，工艺参数的范围大部分
+
+致产品质量误判，同时也会影响到支持向量的个
+
+是重叠的. 两者不同之处在于：（a）工艺规范是根
+
+数. 当核参数 σ 取值较大时，高次项会迅速衰减，
+
+据大类钢种数据的质量可控区边界（软超球体的
+
+软超球体退化为超椭球体，会造成异常点被判为
+
+最大内接矩形）来确定工艺参数范围，因此参数范
+
+正常样本. 当核参数 σ 取值较小时，高次项的影响
+
+围要比质量设计给出的范围宽泛一些；（b）质量设
+
+万方数据
+
+徐
+
+钢等： 基于机器学习的产品质量在线智能监控方法
+
+· 741 ·
+
+表 5 工艺参数的预设值
+Table 5 Preinstalling values of process parameters
+Exit
+Entry
+Exit
+Fast-cooling
+Slow-cooling
+Mass
+Mass
+Mass
+Mass
+Coiling
+Soaking
+Aging exit
+Process
+temperature temperature temperature
+exit
+exit
+fraction of fraction of fraction of fraction of
+temperature / temperature /
+temperature /
+parameter
+of heating
+of finish
+of finish
+temperature /
+temperature /
+C/%
+Mn / %
+P/%
+S/%
+°C
+°C
+°C
+furnace / °C rolling / °C rolling / °C
+°C
+°C
+
+Fast-cooling temperature/℃
+
+Soft
+0.0024–
+hypersphere 0.0018
+0.0027–
+Max–min
+0.0011
+0.0026–
+6σ
+0.0008
+
+480
+460
+
+0.150–
+0.100
+0.160–
+0.10
+0.1759–
+0.0799
+
+0.0115–
+0.0065
+0.014–
+0.007
+0.0156–
+0.0048
+
+Normal samples
+Abnormal samples
+
+0.0118–
+0.0048
+0.0139–
+0.0024
+0.0133–
+0.0025
+
+1273–1255
+
+1055–1030
+
+908–924
+
+740–685
+
+839–814
+
+451–398
+
+392–357
+
+662–620
+
+1277–1247
+
+1084–1014
+
+928–899
+
+755–654
+
+855–790
+
+456–379
+
+394–345
+
+674–606
+
+1280–1246
+
+1067–1013
+
+926–907
+
+834–582
+
+857–793
+
+489–376
+
+407–345
+
+675–609
+
+数量异常点的训练数据集更有利于准确地划分软
+σ=70
+
+440
+
+超球体的边界，因而有利于正确地制定工艺规范.
+
+σ=30
+
+420
+σ=25
+
+400
+
+机器学习方法在产品质量在线监控、在线诊断、
+
+360
+780
+
+800
+820
+840
+860
+Soaking temperature/℃
+
+880
+
+图 10 σ 取不同值时,软超球体的边界
+Fig.10
+
+结论
+本文结合钢铁制造流程的特点，分析讨论了
+
+380
+340
+
+4
+
+Border of the soft hypersphere with different σ values
+
+在线优化和在线预设定中的应用实例，证实了利
+用机器学习提取数据中各种信息和知识，可以实
+现产品质量实时在线监控，避免由于用户质量异
+议和批量判废造成重大经济损失. 主要结论如下：
+（1）针对工业生产数据具有高维、强耦合、非
+
+计是根据小类钢种数据，即按照质量指标的区段，
+
+线性的特点，提出基于软超球体算法的产品质量
+
+通过计算工艺参数随质量指标变化的主流形“管
+
+异常在线识别和异常原因诊断方法. 采用非线性
+
+道”来确定单一工艺参数范围，可根据客户对质量
+
+高斯核函数将原始空间的样本点映射到高维特征
+
+指标的具体要求实现精准定制，适用于钢种性能
+
+空间，通过求解特征空间中软超球体边界来确定
+
+的局部调整；（c）软超球体的边界是根据所有过程
+
+质量控制限，并利用支持向量和异常点的贡献图
+
+参数的数据结构特征，综合考虑了多变量、强耦
+
+实现产品质量在线监测和异常原因在线诊断.
+
+合、非线性等复杂情况下确定的质量可控区边界，所
+
+（2）为了满足产品个性化定制的需求，提出基
+
+制定的工艺规范更符合实际情况；而主流形是针对
+
+于机器学习的质量设计和工艺规范制定方法. 通
+
+单一工艺参数的局部区域内“管道”边界来制定质
+
+过多类邻域的主流形学习方法确定各工艺参数随
+
+量设计，两者即有相似之处也有差别，在实际应用
+
+质量指标变化的局域主流形，并由主流形所形成
+
+中可互相对照来制定工艺规范和质量设计标准.
+
+的质量可控区的局部区间范围来制定个性化的质
+
+（3）从概念上讲，工艺规范制定过程是从软超
+
+量设计；提出通过寻找软超球体最大内接矩形来
+
+球体中寻求最大的内接矩形体，但在实际工业应
+
+制定工艺规范的方法，并讨论了多重耦合情况下
+
+用还应考虑所制定的工艺规范是否具有可行性.
+
+工艺规范制定和规范验证等相关问题.
+
+在工艺参数预设定时，应考虑以下几个问题：（a）
+
+（3）通过汽车用钢（IF 钢）生产数据分析，讨论
+
+工艺装备条件：由于工艺装备的过程能力决定了
+
+了机器学习方法在质量在线监控、在线诊断、在
+
+工艺规范可操控的范围，因而在工艺参数预设定
+
+线优化的应用实例和相关的问题. 这些机器学习
+
+时，应综合考虑工艺装备状况、工艺流程的优化、
+
+方法已在十余条生产线推广应用，证实了方法的
+
+工艺参数可控范围和控制精度等因素；（b）数据采
+
+有效性和实时性，质量在线判定的准确率达到
+
+集范围：工艺规范制定是基于数据驱动的机器学
+
+99.2%，在线监控系统对每个产品在线检测所需时
+
+习方法，因此数据的可靠性和完备性对机器学习
+
+间不到 0.1 s，满足产品质量在线监控实时性要求.
+
+结果有着重大影响. 训练数据集应验证其可靠性，
+确保数据准确、可靠，还需验证数据的完备性，包括
+
+参
+
+采集所有关键变量数据和质量异常数据. 包含一定
+
+[1]
+
+万方数据
+
+考
+
+文
+
+献
+
+Communication Promoters Group of the Industry-Science.
+
+工程科学学报，第 44 卷，第 4 期
+
+· 742 ·
+Recommendations for Implementing the Strategic Initiative
+
+[19] Huang J, Kaul G, Cai C S, et al. Quality by design case study: An
+
+Industrie 4.0, 2013,http://www.acatech.de/industrie4.0
+
+[2]
+
+China Electronics Standardization Institute. Industrial Big Data
+White Paper (2017 version). http://www.cesi.cn/201703/2250.html
+（ 中 国 电 子 技 术 标 准 研 究 院 . 工 业 大 数 据 白 皮 书 (2017版 ).
+
+[3]
+
+[5]
+
+multivariate modeling of drug product formula and manufacturing
+process. J Pharm Sci, 2012, 101（12）: 4597
+
+White Paper (2017 version). http://www.cesi.cn/201703/2251.html
+
+[21] Kabzan J, Hewing L, Liniger A, et al. Learning-based model
+
+（ 中国电子技术标准研究院. 信息物理系统白皮书(2017版).
+
+predictive control for autonomous racing. IEEE Robotics Autom
+Lett, 2019, 4（4）: 3363
+
+Gehrmann C, Gunnarsson M. A digital twin based industrial
+
+[22] Xu G, Li M, Xu J W. Application research of on-line quality
+
+automation and control system security architecture. IEEE Trans
+
+control method to metallurgical products // 2019 IEEE
+
+Ind Inform, 2020, 16（1）: 669
+
+International
+
+Tao F, Cheng J F, Qi Q L. IIHub: an industrial Internet-of-things
+
+Engineering Management (IEEM). Macao, 2019: 390
+
+IEEE Trans Ind Inform, 2018, 14（5）: 2271
+Morgan D, Jacobs R. Opportunities and challenges for machine
+
+Industrial
+
+Engineering
+
+and
+
+[23] Hertneck M, Köhler J, Trimpe S, et al. Learning an approximate
+
+Lett, 2018, 2（3）: 543
+
+[24] Mesbah A. Stochastic model predictive control: An overview and
+perspectives for future research. IEEE Control Syst Mag, 2016,
+
+Pablo J J, Jackson N E, Webb M A, et al. New frontiers for the
+
+36（6）: 30
+
+Kim K, Ward L, He J G, et al. Machine-learning-accelerated highthroughput materials screening: Discovery of novel quaternary
+Heusler compounds. Phys Rev Materials, 2018, 2（12）: 123801
+
+[9]
+
+on
+
+71
+
+materials genome initiative. Npj Comput Mater, 2019, 5（1）: 1
+
+[8]
+
+Conference
+
+model predictive controller with guarantees. IEEE Control Syst
+
+learning in materials science. Annu Rev Mater Res, 2020, 50（1）:
+
+[7]
+
+development. Int J Pharm, 2009, 382（1-2）: 23
+
+[20] Cui Y, Song X L, Chuang K, et al. Variable selection in
+
+China Electronics Standardization Institute. Cyber-physical System
+
+hub toward smart manufacturing based on cyber-physical system.
+
+[6]
+
+integrated multivariate approach to drug product and process
+
+http://www.cesi.cn/201703/2250.html）
+
+http://www.cesi.cn/201703/2251.html）
+
+[4]
+
+Development. New York, 2015: 537
+
+[25] Balta E C, Lin Y K, Barton K, et al. Production as a service: A
+digital manufacturing framework for optimizing utilization. IEEE
+Trans Autom Sci Eng, 2018, 15（4）: 1483
+
+[26] DeSmit Z, Elhabashy A E, Wells L J, et al. An approach to cyber-
+
+Boyd P G, Lee Y, Smit B. Computational development of the
+
+physical vulnerability assessment for intelligent manufacturing
+
+nanoporous materials genome. Nat Rev Mater, 2017, 2: 17037
+
+systems. J Manuf Syst, 2017, 43: 339
+
+[10] Arróyave R, McDowell D L. Systems approaches to materials
+
+[27] Michniewicz J, Reinhart G. Cyber-physical-robotics-modelling of
+
+design: Past, present, and future. Annu Rev Mater Res, 2019,
+
+modular robot cells for automated planning and execution of
+assembly tasks. Mechatronics, 2016, 34: 170
+
+49（1）: 103
+
+[11] Zunger A. Inverse design in search of materials with target
+functionalities. Nat Rev Chem, 2018, 2: 121
+
+[28] Pirvu B C, Zamfirescu C B, Gorecky D. Engineering insights from
+an anthropocentric cyber-physical system: A case study for an
+
+[12] Sanchez-Lengeling B, Aspuru-Guzik A. Inverse molecular design
+using machine learning: Generative models for matter engineering.
+Science, 2018, 361（6400）: 360
+
+assembly station. Mechatronics, 2016, 34: 147
+
+[29] Jiang P Y, Ding K, Leng J W. Towards a cyber-physical-socialconnected and service-oriented manufacturing paradigm: Social
+
+[13] Noé F, Tkatchenko A, Müller K R, et al. Machine learning for
+molecular simulation. Annu Rev Phys Chem, 2020, 71（1）: 361
+
+[14] Wu S, Kondo Y, Kakimoto M A, et al. Machine-learning-assisted
+discovery of polymers with high thermal conductivity using a
+molecular design algorithm. Npj Comput Mater, 2019, 5: 66
+
+[15] Butler K T, Davies D W, Cartwright H, et al. Machine learning for
+molecular and materials science. Nature, 2018, 559（7715）: 547
+
+Manufacturing. Manuf Lett, 2016, 7: 15
+
+[30] Zawadzki P, Żywicki K. Smart product design and production
+control for effective mass customization in the industry 4.0
+concept. Manag Prod Eng Rev, 2016, 7（3）: 105
+
+[31] Yao X F, Lin Y Z. Emerging manufacturing paradigm shifts for
+the incoming industrial revolution. Int J Adv Manuf Technol, 2016,
+85（5-8）: 1665
+
+[16] Gomberg J A, Medford A J, Kalidindi S R. Extracting knowledge
+
+[32] Xu G. Application Research of CPS in On-Line Quality Control to
+
+from molecular mechanics simulations of grain boundaries using
+
+Metallurgical Products [Dissertation]. Beijing: University of
+
+machine learning. Acta Mater, 2017, 133: 100
+
+Science and Technology Beijing, 2019
+
+[17] Bartók A P, De S, Poelking C, et al. Machine learning unifies the
+modeling of materials and molecules. Sci Adv, 2017, 3（12）:
+
+（ 徐钢. CPS在冶金产品质量在线管控中应用研究[学位论文].
+北京: 北京科技大学, 2019）
+
+[33] Xu J W. Quality Control Theory and Method of Metallurgical
+
+e1701816
+
+[18] Kourti T. Multivariate analysis for process understanding,
+
+Production Process. Beijing: Metallurgical Industry Press, 2015
+
+monitoring, control, and optimization of lyophilization processes //
+
+（ 徐金梧. 冶金生产过程质量监控理论与方法. 北京: 冶金工业
+
+Quality
+
+出版社, 2015）
+
+万方数据
+
+by
+
+Design
+
+for
+
+Biopharmaceutical
+
+Drug
+
+Product
+
+徐
+
+钢等： 基于机器学习的产品质量在线智能监控方法
+
+[34] Jolliffe I T, Cadima J. Principal component analysis: A review and
+recent developments. Phil Trans R Soc A, 2016, 374（2065）:
+20150202
+
+[35] Tabora J E, Domagalski N. Multivariate analysis and statistics in
+pharmaceutical process research and development. Annu Rev
+Chem Biomol Eng, 2017, 8: 403
+
+[36] Johnson R A, Wichern D W. Applied Multivariate Statistical
+Analysis, 5th edition. Prentice Hall, 2002
+
+[37] Tax D M J, Duin R P W. Support vector data description. Mach
+Learn, 2004, 54（1）: 45
+
+[38] Zimek A, Schubert E, Kriegel H P. A survey on unsupervised
+outlier detection in high-dimensional numerical data. Stat Anal
+Data Min:ASA Data Sci J, 2012, 5（5）: 363
+
+[39] Gang X. Online monitoring and control method of product quality
+based on embedded cyber-physical system models. J Mech Eng,
+2017, 53（12）: 94
+
+[40] Shawe-Taylor J, Cristianini N. Kernel Methods for Pattern
+
+万方数据
+
+· 743 ·
+Analysis. Cambridge: Cambridge University Press, 2004
+
+[41] Volpi M, Tuia D, Camps-Valls G, et al. Unsupervised change
+detection with kernels. IEEE Geosci Remote Sens Lett, 2012, 9（6）:
+1026
+
+[42] Li M, Xu J W, Yang J H, et al. Multiple manifolds analysis and its
+application to fault diagnosis. Mech Syst Signal Process, 2009,
+23（8）: 2500
+
+[43] Belkin M, Niyogi P, Sindhwani V. Manifold regularization: A
+geometric framework for learning from labeled and unlabeled
+examples. J Mach Learn Res, 2006, 7: 2399
+
+[44] Zhang Z, Zha H. Principal manifolds and nonlinear dimensionality
+reduction via tangent space alignment. SIAM J Sci Comput, 2004,
+26（1）: 313
+
+[45] Saul L K, Roweis S T. Think globally, fit locally: unsupervised
+learning of low dimensional manifolds. J Mach Learn Res, 2003,
+4: 119
+
+
